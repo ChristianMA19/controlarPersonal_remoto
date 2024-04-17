@@ -1,3 +1,4 @@
+import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../authentication/login.dart';
@@ -13,6 +14,7 @@ class HomePageCord extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.grey,
         title: const Text("Home"),
         actions: [
           IconButton(
@@ -28,7 +30,17 @@ class HomePageCord extends StatelessWidget {
         ],
       ),
       body: const Center(child: Text("Welcome to form controller coordinator")),
-      
+      floatingActionButton: Icons.add == null
+          ? null
+          : FloatingActionButton(
+              key: const Key('ButtonHomeAdd'),
+              onPressed: () {
+                Get.to(() => const SignUpPage(
+                        key: Key('SignUpPage'),
+                      ));
+              },
+              child: const Icon(Icons.add),
+            )
     );
   }
 }

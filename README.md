@@ -28,3 +28,7 @@ Notas:
 
 1. Soportes realizados a clientes (con filtro de cliente y/o US) mostrando fecha, US y evaluación
 2. Listado de US con número de reportes y calificación promedio
+
+## Entregas
+
+1. UI terminado 22/04/2024 10:30am 👷‍♂️👨‍🏭
