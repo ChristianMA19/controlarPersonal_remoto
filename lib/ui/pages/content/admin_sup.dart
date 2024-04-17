@@ -1,54 +1,22 @@
 import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
-import 'package:controlarpersonal_remoto/ui/pages/content/admin_client.dart';
-import 'package:controlarpersonal_remoto/ui/pages/content/admin_sup.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../authentication/login.dart';
 
 
-
-class HomePageCord extends StatelessWidget {
-  const HomePageCord(
-      {Key? key, required this.loggedEmail, required this.loggedPassword})
+class adminSup extends StatelessWidget {
+  const adminSup(
+      {Key? key})
       : super(key: key);
-  final String loggedEmail;
-  final String loggedPassword;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        title: const Text("Home"),
+        title: const Text("Support Administrator"),
         
-        actions: [
-          Row(
-            children: [
-              TextButton(onPressed: (){
-                Get.to(() => const adminSup(
-                        key: Key('adminSup')
-                      ));
-              }, child: const Text("Admin Supports")),
-              const SizedBox(width: 10),
-              TextButton(onPressed: (){
-                Get.to(() => const adminClient(
-                        key: Key('adminClient')
-                      ));
-              }, child: const Text("Admin Clients")),
-              IconButton(
-              key: const Key('ButtonHomeLogOff'),
-              onPressed: () {
-                Get.off(() => LoginScreen(
-                      key: const Key('LoginScreen'),
-                      email: loggedEmail,
-                      password: loggedPassword,
-                    ));
-              },
-              icon: const Icon(Icons.logout)),
-              const SizedBox(width: 10),
-            ],
-          )
-          
-        ],
+        actions: [],
       ),
       floatingActionButton: Icons.add == null
           ? null
@@ -66,7 +34,7 @@ class HomePageCord extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text("Forms sent by support", style: TextStyle(fontSize: 24)),
+            const Text("Active supporters", style: TextStyle(fontSize: 24)),
             const SizedBox(height: 20), // Espacio entre el texto y el ListView
             Expanded(
               child: _getXlistView(),
@@ -88,8 +56,26 @@ class HomePageCord extends StatelessWidget {
       child: ListView.builder(
         itemCount: 20, // Número de elementos en la lista
         itemBuilder: (context, index) {
+          // Aquí deberías obtener los datos reales para cada índice
+          // Por ahora, simplemente usaremos datos ficticios
+          String id = "ID_$index";
+          String nombre = "Nombre_$index";
+          String correo = "correo_$index@example.com";
+
           return ListTile(
-            title: Text('Formulario $index'),
+            title: Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 80.0),
+                  child: Text('ID: $id'),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(right: 80.0),
+                  child: Text('Nombre: $nombre'),
+                ),
+                Text('Correo: $correo'),
+              ],
+            ),
             onTap: () {
               // Acción al hacer clic en un elemento
             },
@@ -98,8 +84,5 @@ class HomePageCord extends StatelessWidget {
       ),
     );
   }
-
-
-
 
 }
