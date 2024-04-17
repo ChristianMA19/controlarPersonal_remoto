@@ -1,50 +1,46 @@
 import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
+import 'package:controlarpersonal_remoto/ui/pages/controller/formpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../authentication/login.dart';
 
-
 class adminSup extends StatelessWidget {
-  const adminSup(
-      {Key? key})
-      : super(key: key);
+  const adminSup({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey,
-        title: const Text("Support Administrator"),
-        
-        actions: [],
-      ),
-      floatingActionButton: Icons.add == null
-          ? null
-          : FloatingActionButton(
-              key: const Key('ButtonHomeAdd'),
-              onPressed: () {
-                Get.to(() => const SignUpPage(
+        appBar: AppBar(
+          backgroundColor: Colors.grey,
+          title: const Text("Support Administrator"),
+          actions: [],
+        ),
+        floatingActionButton: Icons.add == null
+            ? null
+            : FloatingActionButton(
+                key: const Key('ButtonHomeAdd'),
+                onPressed: () {
+                  Get.to(() => const SignUpPage(
                         key: Key('SignUpPage'),
                       ));
-              },
-              child: const Icon(Icons.add),
-            ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 200, right: 200, top: 20, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text("Active supporters", style: TextStyle(fontSize: 24)),
-            const SizedBox(height: 20), // Espacio entre el texto y el ListView
-            Expanded(
-              child: _getXlistView(),
-            ),
-          ],
-        ),
-      )
-
-      
-    );
+                },
+                child: const Icon(Icons.add),
+              ),
+        body: Padding(
+          padding:
+              const EdgeInsets.only(left: 200, right: 200, top: 20, bottom: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("Active supporters", style: TextStyle(fontSize: 24)),
+              const SizedBox(
+                  height: 20), // Espacio entre el texto y el ListView
+              Expanded(
+                child: _getXlistView(),
+              ),
+            ],
+          ),
+        ));
   }
 
   Widget _getXlistView() {
@@ -77,12 +73,17 @@ class adminSup extends StatelessWidget {
               ],
             ),
             onTap: () {
-              // Acción al hacer clic en un elemento
+              Get.to(() => EditarDatosPage(
+                    key: const Key('EditarDatosPage'),
+                    id: 'ID: $index',
+                    nombre: 'Nombre: $index',
+                    correo: 'Correo: $index',
+                    contrasena: 'Contraseña: $index',
+                  ));
             },
           );
         },
       ),
     );
   }
-
 }
