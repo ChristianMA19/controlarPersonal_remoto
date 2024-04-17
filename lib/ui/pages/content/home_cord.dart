@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import '../authentication/login.dart';
 
 
-class HomePage extends StatelessWidget {
-  const HomePage(
+class HomePageCord extends StatelessWidget {
+  const HomePageCord(
       {Key? key, required this.loggedEmail, required this.loggedPassword})
       : super(key: key);
   final String loggedEmail;
@@ -26,7 +26,9 @@ class HomePage extends StatelessWidget {
               },
               icon: const Icon(Icons.logout))
         ],
-      )
+      ),
+      body: const Center(child: Text("Welcome to form controller coordinator")),
+      
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get/get.dart';
-import '../content/home.dart';
-// import 'signup.dart';
+import '../content/home_sup.dart';
+import '../content/home_cord.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key, required this.email, required this.password})
@@ -37,19 +37,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: MediaQuery.of(context).size.height,
                   margin: const EdgeInsets.only(right: 20),
                   color:Colors.blueGrey,
-                  child: const Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                           "Welcome to form controller",
                           style: TextStyle(
                               fontSize: 42, color: Colors.white),
-
                       ),
-                      SizedBox(
-                        height: 50,
+                      const SizedBox(height: 20), // Agrega un espacio entre los textos y la imagen
+                      Image.asset(
+                        'lib/assets/images/dartlogo.png', // Ruta de la imagen
                       ),
-                      Text(
+                      const Text(
                           "Login with your email and password",
                           style: TextStyle(
                               fontSize: 24, color: Colors.white),
@@ -124,16 +124,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             form!.save();
                             if (form.validate()) {
                               if ((_emailController.text == "a@a.com" || _emailController.text == "a@b.com") && _passwordController.text == "123456") {
-                                Get.offAll(HomePage(
-                                  key: const Key('HomePage'),
+                                Get.offAll(HomePageCord(
+                                  key: const Key('HomePageCord'),
                                   loggedEmail: _emailController.text,
                                   loggedPassword: _passwordController.text,
                                 ));
                               }
                               else if (widget.email == _emailController.text &&
                                   widget.password == _passwordController.text) {
-                                Get.offAll(HomePage(
-                                  key: const Key('HomePage'),
+                                Get.offAll(HomePageSup(
+                                  key: const Key('HomePageSup'),
                                   loggedEmail: _emailController.text,
                                   loggedPassword: _passwordController.text,
                                 ));
