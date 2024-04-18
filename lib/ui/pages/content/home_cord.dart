@@ -111,29 +111,29 @@ class HomePageCord extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     Get.to(() => EditarDatosPageForm(
-                      key: const Key('EditarDatosPageForm'),
-                      id: '$index',
-                      descripcion: '$index',
-                      cliente: '$index',
-                      hora: '$index',
-                      duracion: '$index',
-                      support: '$index',
-                    ));
+                          key: const Key('EditarDatosPageForm'),
+                          id: '$index',
+                          descripcion: '$index',
+                          cliente: '$index',
+                          hora: '$index',
+                          duracion: '$index',
+                          support: '$index',
+                        ));
                   },
                   child: const Text('Editar'),
                 ),
               ],
-          ),
-          onTap: () {
+            ),
+            onTap: () {
               Get.to(() => EditarDatosPageForm(
-                      key: const Key('EditarDatosPageForm'),
-                      id: '$index',
-                      descripcion: '$index',
-                      cliente: '$index',
-                      hora: '$index',
-                      duracion: '$index',
-                      support: '$index',
-                    ));
+                    key: const Key('EditarDatosPageForm'),
+                    id: '$index',
+                    descripcion: '$index',
+                    cliente: '$index',
+                    hora: '$index',
+                    duracion: '$index',
+                    support: '$index',
+                  ));
             },
           );
         },
