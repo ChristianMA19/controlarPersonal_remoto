@@ -1,6 +1,7 @@
 import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
 import 'package:controlarpersonal_remoto/ui/pages/content/admin_client.dart';
 import 'package:controlarpersonal_remoto/ui/pages/content/admin_sup.dart';
+import 'package:controlarpersonal_remoto/ui/pages/content/listus_form.dart';
 import 'package:controlarpersonal_remoto/ui/pages/controller/formpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,12 @@ class HomePageCord extends StatelessWidget {
           actions: [
             Row(
               children: [
+                TextButton(
+                    onPressed: () {
+                      Get.to(() => const listusform(key: Key('listusform')));
+                    },
+                    child: const Text("US List")),
+                const SizedBox(width: 10),
                 TextButton(
                     onPressed: () {
                       Get.to(() => const adminSup(key: Key('adminSup')));
