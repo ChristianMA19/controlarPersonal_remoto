@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(0,0,0,0),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -36,23 +36,28 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: MediaQuery.of(context).size.width * 0.6,
                   height: MediaQuery.of(context).size.height,
                   margin: const EdgeInsets.only(right: 20),
-                  color:Colors.blueGrey,
+                  color: Colors.blueGrey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                          "Welcome to form controller",
-                          style: TextStyle(
-                              fontSize: 42, color: Colors.white),
+                        "Welcome to form controller",
+                        style: TextStyle(fontSize: 42, color: Colors.white),
                       ),
-                      const SizedBox(height: 20), // Agrega un espacio entre los textos y la imagen
-                      Image.asset(
-                        'lib/assets/images/dartlogo.png', // Ruta de la imagen
+                      const SizedBox(
+                          height:
+                              20), // Agrega un espacio entre los textos y la imagen
+                      SizedBox(
+                        width: 400, // Desired width
+                        height: 400, // Desired height
+                        child: Image.asset(
+                          'lib/assets/images/dartlogo.png', // Path to the image
+                        ),
                       ),
+
                       const Text(
-                          "Login with your email and password",
-                          style: TextStyle(
-                              fontSize: 24, color: Colors.white),
+                        "Login with your email and password",
+                        style: TextStyle(fontSize: 24, color: Colors.white),
                       ),
                       // You can add any content you want to show here
                     ],
@@ -73,8 +78,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: kIsWeb ? 200 : 100,
                       ),
                       Container(
-                        margin: const EdgeInsets.only(right: kIsWeb ? 30 : 20, left: kIsWeb ? 0 : 20),
-                        child:TextFormField(
+                        margin: const EdgeInsets.only(
+                            right: kIsWeb ? 30 : 20, left: kIsWeb ? 0 : 20),
+                        child: TextFormField(
                           key: const Key('TextFormFieldLoginEmail'),
                           controller: _emailController,
                           decoration:
@@ -87,34 +93,33 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                             return null;
                           },
-                        ), 
+                        ),
                       ),
-                      
                       const SizedBox(
                         height: kIsWeb ? 50 : 20,
                       ),
                       Container(
-                        margin: const EdgeInsets.only(right: kIsWeb ? 30 : 20, left: kIsWeb ? 0 : 20),
-                        child:TextFormField(
-                        key: const Key('TextFormFieldLoginPassword'),
-                        controller: _passwordController,
-                        decoration:
-                            const InputDecoration(labelText: "Password"),
-                        keyboardType: TextInputType.number,
-                        obscureText: true,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Enter password";
-                          } else if (value.length < 6) {
-                            return "Password should have at least 6 characters";
-                          }
-                          return null;
-                        },
+                        margin: const EdgeInsets.only(
+                            right: kIsWeb ? 30 : 20, left: kIsWeb ? 0 : 20),
+                        child: TextFormField(
+                          key: const Key('TextFormFieldLoginPassword'),
+                          controller: _passwordController,
+                          decoration:
+                              const InputDecoration(labelText: "Password"),
+                          keyboardType: TextInputType.number,
+                          obscureText: true,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Enter password";
+                            } else if (value.length < 6) {
+                              return "Password should have at least 6 characters";
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      )
-                      ,
                       const SizedBox(
-                        height: kIsWeb ? 200 : 50,
+                        height: kIsWeb ? 100 : 50,
                       ),
                       OutlinedButton(
                           key: const Key('ButtonLoginSubmit'),
@@ -124,14 +129,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             final form = _formKey.currentState;
                             form!.save();
                             if (form.validate()) {
-                              if ((_emailController.text == "a@a.com" || _emailController.text == "a@b.com") && _passwordController.text == "123456") {
+                              if ((_emailController.text == "a@a.com" ||
+                                      _emailController.text == "a@b.com") &&
+                                  _passwordController.text == "123456") {
                                 Get.offAll(HomePageCord(
                                   key: const Key('HomePageCord'),
                                   loggedEmail: _emailController.text,
                                   loggedPassword: _passwordController.text,
                                 ));
-                              }
-                              else if (widget.email == _emailController.text &&
+                              } else if (widget.email ==
+                                      _emailController.text &&
                                   widget.password == _passwordController.text) {
                                 Get.offAll(HomePageSup(
                                   key: const Key('HomePageSup'),
@@ -142,13 +149,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const snackBar = SnackBar(
                                   content: Text('User or password nok'),
                                 );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
                               }
                             } else {
                               const snackBar = SnackBar(
                                 content: Text('Validation nok'),
                               );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             }
                           },
                           child: const Text("Submit")),
