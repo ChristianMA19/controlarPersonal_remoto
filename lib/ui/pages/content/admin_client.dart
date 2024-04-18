@@ -1,4 +1,4 @@
-import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
+import 'package:controlarpersonal_remoto/ui/pages/controller/clientpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,17 +52,34 @@ class adminClient extends StatelessWidget {
           return ListTile(
             title: Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 80.0),
-                  child: Text('ID: $id'),
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('ID: $id'),
+                      const SizedBox(width: 20.0),
+                      Text('Nombre: $nombre'),
+                    ],
                 ),
-                Container(
-                  margin: const EdgeInsets.only(right: 80.0),
-                  child: Text('Nombre: $nombre'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => EditarDatosPageClient(
+                      key: const Key('EditarDatosPageClient'),
+                      id: '$index',
+                      nombre: '$index',
+                    ));
+                  },
+                  child: Text('Editar'),
                 ),
               ],
             ),
             onTap: () {
+              Get.to(() => EditarDatosPageClient(
+                      key: const Key('EditarDatosPageClient'),
+                      id: '$index',
+                      nombre: '$index',
+                    ));
               // Acción al hacer clic en un elemento
             },
           );

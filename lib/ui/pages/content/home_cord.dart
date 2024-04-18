@@ -2,6 +2,7 @@ import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
 import 'package:controlarpersonal_remoto/ui/pages/content/admin_client.dart';
 import 'package:controlarpersonal_remoto/ui/pages/content/admin_sup.dart';
 import 'package:controlarpersonal_remoto/ui/pages/controller/formpage.dart';
+import 'package:controlarpersonal_remoto/ui/pages/controller/suppage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../authentication/login.dart';
@@ -86,8 +87,46 @@ class HomePageCord extends StatelessWidget {
         itemCount: 20, // Número de elementos en la lista
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text('Formulario $index'),
-            onTap: () {
+            title: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('form ID: $index'),
+                      const SizedBox(width: 20),
+                      Text('Client: $index'),
+                      const SizedBox(width: 20),
+                      Text('Support: $index'),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => EditarDatosPageForm(
+                      key: const Key('EditarDatosPageForm'),
+                      id: '$index',
+                      descripcion: '$index',
+                      cliente: '$index',
+                      hora: '$index',
+                      duracion: '$index',
+                      support: '$index',
+                    ));
+                  },
+                  child: Text('Editar'),
+                ),
+              ],
+          ),
+          onTap: () {
+              Get.to(() => EditarDatosPageForm(
+                      key: const Key('EditarDatosPageForm'),
+                      id: '$index',
+                      descripcion: '$index',
+                      cliente: '$index',
+                      hora: '$index',
+                      duracion: '$index',
+                      support: '$index',
+                    ));
             },
           );
         },

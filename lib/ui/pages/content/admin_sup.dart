@@ -1,5 +1,5 @@
 import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
-import 'package:controlarpersonal_remoto/ui/pages/controller/formpage.dart';
+import 'package:controlarpersonal_remoto/ui/pages/controller/suppage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../authentication/login.dart';
@@ -57,28 +57,42 @@ class adminSup extends StatelessWidget {
           String id = "ID_$index";
           String nombre = "Nombre_$index";
           String correo = "correo_$index@example.com";
-
           return ListTile(
             title: Row(
               children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 80.0),
-                  child: Text('ID: $id'),
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('ID: $id'),
+                      const SizedBox(width: 20),
+                      Text('Nombre: $nombre'),
+                      const SizedBox(width: 20),
+                      Text('Correo: $correo'),
+                    ],
+                  ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(right: 80.0),
-                  child: Text('Nombre: $nombre'),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => EditarDatosPage(
+                      key: const Key('EditarDatosPage'),
+                      id: '$index',
+                      nombre: '$index',
+                      correo: '$index',
+                      contrasena: '$index',
+                    ));
+                  },
+                  child: Text('Editar'),
                 ),
-                Text('Correo: $correo'),
               ],
             ),
             onTap: () {
               Get.to(() => EditarDatosPage(
                     key: const Key('EditarDatosPage'),
-                    id: 'ID: $index',
-                    nombre: 'Nombre: $index',
-                    correo: 'Correo: $index',
-                    contrasena: 'Contraseña: $index',
+                    id: '$index',
+                    nombre: '$index',
+                    correo: '$index',
+                    contrasena: '$index',
                   ));
             },
           );
