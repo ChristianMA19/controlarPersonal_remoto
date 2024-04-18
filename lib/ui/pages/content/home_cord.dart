@@ -2,7 +2,6 @@ import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
 import 'package:controlarpersonal_remoto/ui/pages/content/admin_client.dart';
 import 'package:controlarpersonal_remoto/ui/pages/content/admin_sup.dart';
 import 'package:controlarpersonal_remoto/ui/pages/controller/formpage.dart';
-import 'package:controlarpersonal_remoto/ui/pages/controller/suppage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../authentication/login.dart';
@@ -48,6 +47,7 @@ class HomePageCord extends StatelessWidget {
             )
           ],
         ),
+        // ignore: unnecessary_null_comparison
         floatingActionButton: Icons.add == null
             ? null
             : FloatingActionButton(
@@ -113,7 +113,7 @@ class HomePageCord extends StatelessWidget {
                       support: '$index',
                     ));
                   },
-                  child: Text('Editar'),
+                  child: const Text('Editar'),
                 ),
               ],
           ),

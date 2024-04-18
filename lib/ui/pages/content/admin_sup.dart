@@ -2,7 +2,6 @@ import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
 import 'package:controlarpersonal_remoto/ui/pages/controller/suppage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../authentication/login.dart';
 
 class adminSup extends StatelessWidget {
   const adminSup({Key? key}) : super(key: key);
@@ -15,6 +14,7 @@ class adminSup extends StatelessWidget {
           title: const Text("Support Administrator"),
           actions: [],
         ),
+        // ignore: unnecessary_null_comparison
         floatingActionButton: Icons.add == null
             ? null
             : FloatingActionButton(
