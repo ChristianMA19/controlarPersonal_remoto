@@ -18,7 +18,7 @@ class listusform extends StatelessWidget {
         actions: [],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 400, right: 400, top: 20, bottom: 20),
+        padding: const EdgeInsets.only(left: 200, right: 200, top: 20, bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
