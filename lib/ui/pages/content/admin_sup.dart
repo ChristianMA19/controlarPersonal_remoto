@@ -84,6 +84,17 @@ class adminSup extends StatelessWidget {
                   },
                   child: Text('Editar'),
                 ),
+                TextButton(
+                  onPressed: () {
+                    // Agrega aquí la lógica para eliminar
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: Colors.red, // Establece el color del texto en rojo
+                    ),
+                  ),
+                ),
               ],
             ),
             onTap: () {

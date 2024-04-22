@@ -12,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
+  final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
@@ -56,6 +57,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       const SizedBox(
                         height: 200,
                       ),
+                      Container(
+                         margin: const EdgeInsets.only(right: 30,left: 30),
+                        child:TextFormField(
+                        key: const Key('TextFormFieldSignUpName'),
+                        controller: _nameController,
+                        decoration: const InputDecoration(labelText: 'Name'),
+                      )),
                       Container(
                         margin: const EdgeInsets.only(right: 30,left: 30),
                         child:TextFormField(
