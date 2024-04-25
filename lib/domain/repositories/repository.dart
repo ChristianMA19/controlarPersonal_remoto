@@ -21,8 +21,6 @@ class Repository {
     return await _authenticationDataSource.login(_baseUrl, email, password);
   }
 
-  Future<bool> signUp(String name, String email, String password) async =>
-      await _authenticationDataSource.signUp(_baseUrl,name, email, password);
 
   Future<bool> logOut() async => await _authenticationDataSource.logOut();
 
@@ -36,7 +34,4 @@ class Repository {
 
   Future<bool> deleteUser(int id) async =>
       await _userDatatasource.deleteUser(id);
-
-  Future<bool> simulateProcess() async =>
-      await _userDatatasource.simulateProcess(_baseUrl, token);
 }

@@ -7,8 +7,6 @@ class AuthenticationUseCase {
   Future<bool> login(String email, String password) async =>
       await _repository.login(email, password);
 
-  Future<bool> signUp(String name, String email, String password) async =>
-      await _repository.signUp(name, email, password);
 
   Future<bool> logOut() async => await _repository.logOut();
 }
