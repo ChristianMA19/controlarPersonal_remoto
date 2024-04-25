@@ -1,10 +1,22 @@
+import 'dart:math';
+
+import 'package:controlarpersonal_remoto/domain/models/user.dart';
+import 'package:controlarpersonal_remoto/ui/controller/user_controller.dart';
 import 'package:controlarpersonal_remoto/ui/pages/authentication/signup.dart';
-import 'package:controlarpersonal_remoto/ui/pages/controller/suppage.dart';
+import 'package:controlarpersonal_remoto/ui/pages/content/suppage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class adminSup extends StatelessWidget {
-  const adminSup({Key? key}) : super(key: key);
+
+class adminSup extends StatefulWidget {
+  const adminSup({super.key});
+
+  @override
+  State<adminSup> createState() => _UserListPageState();
+}
+
+class _UserListPageState extends State<adminSup> {
+  UserController userController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -43,72 +55,43 @@ class adminSup extends StatelessWidget {
         ));
   }
 
-  Widget _getXlistView() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey), // Define el color del borde
-        borderRadius: BorderRadius.circular(10), // Define la forma del borde
-      ),
-      child: ListView.builder(
-        itemCount: 20, // Número de elementos en la lista
-        itemBuilder: (context, index) {
-          // Aquí deberías obtener los datos reales para cada índice
-          // Por ahora, simplemente usaremos datos ficticios
-          String id = "ID_$index";
-          String nombre = "Nombre_$index";
-          String correo = "correo_$index@example.com";
-          return ListTile(
-            title: Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('ID: $id'),
-                      const SizedBox(width: 20),
-                      Text('Nombre: $nombre'),
-                      const SizedBox(width: 20),
-                      Text('Correo: $correo'),
-                    ],
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Get.to(() => EditarDatosPage(
-                      key: const Key('EditarDatosPage'),
-                      id: '$index',
-                      nombre: '$index',
-                      correo: '$index',
-                      contrasena: '$index',
-                    ));
-                  },
-                  child: Text('Editar'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Agrega aquí la lógica para eliminar
-                  },
-                  child: Text(
-                    'Delete',
-                    style: TextStyle(
-                      color: Colors.red, // Establece el color del texto en rojo
-                    ),
-                  ),
-                ),
-              ],
+Widget _getXlistView() {
+  return Obx(() => ListView.builder(
+    itemCount: userController.users.length,
+    itemBuilder: (context, index) {
+      User user = userController.users[index];
+
+      return Dismissible(
+        key: UniqueKey(),
+        background: Container(
+          color: Colors.red,
+          alignment: Alignment.centerLeft,
+          child: const Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Text(
+              "Deleting",
+              style: TextStyle(color: Colors.white),
             ),
-            onTap: () {
-              Get.to(() => EditarDatosPage(
-                    key: const Key('EditarDatosPage'),
-                    id: '$index',
-                    nombre: '$index',
-                    correo: '$index',
-                    contrasena: '$index',
-                  ));
-            },
-          );
+          ),
+        ),
+        onDismissed: (direction) {
+          userController.deleteUser(user.id!);
         },
-      ),
-    );
-  }
+        child: Card(
+          child: ListTile(
+            title: Text(user.name),
+            subtitle: Text(user.email),
+            onTap: () {
+              Get.to(() => const EditarDatosPage(),
+                arguments: [user, user.id]);
+            },
+          ),
+        ),
+      );
+    },
+  ));
+}
+
+
+  
 }

@@ -100,8 +100,6 @@ class _HomePageSupState extends State<HomePageSup> {
               Get.off(
                 () => LoginScreen(
                   key: const Key('LoginScreen'),
-                  email: widget.loggedEmail,
-                  password: widget.loggedPassword,
                 ),
               );
             },

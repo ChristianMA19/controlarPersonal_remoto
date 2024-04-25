@@ -1,20 +1,31 @@
+import 'package:controlarpersonal_remoto/domain/models/user.dart';
+import 'package:controlarpersonal_remoto/ui/controller/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class EditarDatosPage extends StatelessWidget {
-  final String id;
-  final String nombre;
-  final String correo;
-  final String contrasena;
+class EditarDatosPage extends StatefulWidget {
+  const EditarDatosPage({super.key});
 
-  EditarDatosPage({required this.id, required this.nombre, required this.correo, required this.contrasena, required Key key});
+  @override
+  State<EditarDatosPage> createState() => _EditUserPageState();
+}
+
+class _EditUserPageState extends State<EditarDatosPage> {
+  User user = Get.arguments[0];
+  final controllerName = TextEditingController();
+  final controllerEmail = TextEditingController();
+  final controllerPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    UserController userController = Get.find();
+    controllerName.text = user.name;
+    controllerEmail.text = user.email;
+    controllerPassword.text = user.password;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        title: Text('Edit Data support $nombre'),
+        title: Text('Edit Data support ${user.id}'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(right:200 , left: 200, top: 20, bottom: 20),
@@ -24,19 +35,12 @@ class EditarDatosPage extends StatelessWidget {
             const Text('Edit Data Support' , style: TextStyle(fontSize: 24)),
             const SizedBox(height: 20),
             TextField(
-              decoration: const InputDecoration(
-                labelText: 'ID',
-                border: OutlineInputBorder(),
-              ),
-              controller: TextEditingController(text: id),
-            ),
-            const SizedBox(height: 20),
-            TextField(
+              controller: controllerName,
               decoration: const InputDecoration(
                 labelText: 'Nombre',
                 border: OutlineInputBorder(),
               ),
-              controller: TextEditingController(text: nombre),
+              
             ),
             const SizedBox(height: 20),
             TextField(
@@ -44,7 +48,7 @@ class EditarDatosPage extends StatelessWidget {
                 labelText: 'Correo',
                 border: OutlineInputBorder(),
               ),
-              controller: TextEditingController(text: correo),
+              controller: controllerEmail,
             ),
             const SizedBox(height: 20),
             TextField(
@@ -52,10 +56,16 @@ class EditarDatosPage extends StatelessWidget {
                 labelText: 'Contraseña',
                 border: OutlineInputBorder(),
               ),
-              controller: TextEditingController(text: contrasena),
+              controller: controllerPassword,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: (){
+            ElevatedButton(onPressed: () async {
+              await userController.updateUser(User(
+                id: user.id,
+                name: controllerName.text,
+                email: controllerEmail.text,
+                password: controllerPassword.text,
+              ));
               Get.back();
             }, child: const Text('Save changes')),
           ],

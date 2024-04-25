@@ -1,4 +1,4 @@
-import 'package:controlarpersonal_remoto/ui/pages/controller/clientpage.dart';
+import 'package:controlarpersonal_remoto/ui/pages/content/clientpage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

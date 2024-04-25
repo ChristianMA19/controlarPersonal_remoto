@@ -1,24 +1,32 @@
+import 'dart:math';
+
+import 'package:controlarpersonal_remoto/ui/controller/authentication_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get/get.dart';
+import 'package:loggy/loggy.dart';
 import '../content/home_sup.dart';
 import '../content/home_cord.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key, required this.email, required this.password})
-      : super(key: key);
-
-  final String email;
-  final String password;
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginPageState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  AuthenticationController authenticationController = Get.find();
+
+  _login(theEmail, thePassword) async {
+    logInfo('_login $theEmail $thePassword');
+    Future<bool> auth =  authenticationController.login(theEmail, thePassword);
+    return auth;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,8 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(fontSize: 42, color: Colors.white),
                       ),
                       const SizedBox(
-                          height:
-                              20), // Agrega un espacio entre los textos y la imagen
+                        height: 20,
+                      ), // Agrega un espacio entre los textos y la imagen
                       SizedBox(
                         width: 400, // Desired width
                         height: 400, // Desired height
@@ -54,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           'lib/assets/images/dartlogo.png', // Path to the image
                         ),
                       ),
-
                       const Text(
                         "Login with your email and password",
                         style: TextStyle(fontSize: 24, color: Colors.white),
@@ -122,47 +129,54 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: kIsWeb ? 100 : 50,
                       ),
                       OutlinedButton(
-                          key: const Key('ButtonLoginSubmit'),
-                          onPressed: () {
-                            // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            final form = _formKey.currentState;
-                            form!.save();
-                            if (form.validate()) {
-                              if ((_emailController.text == "a@a.com" ||
-                                      _emailController.text == "a@b.com") &&
-                                  _passwordController.text == "123456") {
-                                Get.offAll(HomePageCord(
-                                  key: const Key('HomePageCord'),
-                                  loggedEmail: _emailController.text,
-                                  loggedPassword: _passwordController.text,
-                                ));
-                              } else if (_emailController.text == "z@z.com"  &&
-                                  _passwordController.text == "123456") {
-                                Get.offAll(HomePageSup(
-                                  key: const Key('HomePageSup'),
-                                  loggedEmail: _emailController.text,
-                                  loggedPassword: _passwordController.text,
-                                ));
-                              } else {
-                                const snackBar = SnackBar(
-                                  content: Text('User or password nok'),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
-                              }
+                        key: const Key('ButtonLoginSubmit'),
+                        onPressed: () async {
+                          // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
+                          FocusScope.of(context).requestFocus(FocusNode());
+                          final form = _formKey.currentState;
+                          form!.save();
+                          if (form.validate()) {
+                            if ((_emailController.text == "a@a.com" ||
+                                    _emailController.text == "a@b.com") &&
+                                _passwordController.text == "123456") {
+                              Get.offAll(HomePageCord(
+                                key: const Key('HomePageCord'),
+                                loggedEmail: _emailController.text,
+                                loggedPassword: _passwordController.text,
+                              ));
+                            } else if (_emailController.text == "z@z.com" &&
+                                _passwordController.text == "123456") {
+                              Get.offAll(HomePageSup(
+                                key: const Key('HomePageSup'),
+                                loggedEmail: _emailController.text,
+                                loggedPassword: _passwordController.text,
+                              ));
+                            } else{
+                              bool entrar = await _login(_emailController.text,
+                                _passwordController.text);
+                              Loggy('entrar: $entrar');
+                              if (entrar) {
+                              Get.offAll(HomePageSup(
+                                key: const Key('HomePageSup'),
+                                loggedEmail: _emailController.text,
+                                loggedPassword: _passwordController.text,
+                              ));
                             } else {
+                              logInfo('Validation nok');
                               const snackBar = SnackBar(
                                 content: Text('Validation nok'),
                               );
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
                             }
-                          },
-                          child: const Text("Submit")),
+                            } 
+                          }
+                        },
+                        child: const Text("Submit"),
+                      ),
                       const SizedBox(
                         height: 20,
-                      )
+                      ),
                     ],
                   ),
                 ),
