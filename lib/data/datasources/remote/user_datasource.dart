@@ -72,8 +72,8 @@ class UserDataSource {
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
-
-    if (response.statusCode == 201) {
+    
+    if (response.statusCode == 200) {
       //logInfo(response.body);
       return Future.value(true);
     } else {
