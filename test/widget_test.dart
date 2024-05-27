@@ -5,6 +5,7 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:controlarpersonal_remoto/domain/models/report.dart';
 import 'package:controlarpersonal_remoto/domain/models/user.dart';
 import 'package:controlarpersonal_remoto/domain/repositories/repository.dart';
 import 'package:controlarpersonal_remoto/domain/use_case/authentication_usecase.dart';
@@ -13,10 +14,14 @@ import 'package:controlarpersonal_remoto/ui/controller/authentication_controller
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:controlarpersonal_remoto/ui/controller/user_controller.dart';
+import 'package:controlarpersonal_remoto/ui/pages/content/home_sup.dart';
+import 'package:controlarpersonal_remoto/ui/pages/content/report.dart';
 
 
 import 'package:controlarpersonal_remoto/main.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/_http/mock/http_request_mock.dart';
+import 'package:http/http.dart' as http;
 import 'package:get/get_core/src/get_main.dart';
 import 'package:loggy/loggy.dart';
 
@@ -26,8 +31,6 @@ void main() {
   Get.put(UserUseCase());
   Get.put(AuthenticationController());
   UserController userController = Get.put(UserController());;
-
-  
 
   var esperado = [
   {
@@ -108,6 +111,111 @@ void main() {
         print(userDel.toString());
         expect(userDel., matcher)
     });
+
+    group('HomePageSup Widget Test', () {
+    testWidgets('renders HomePageSup and displays fetched reports', (WidgetTester tester) async {
+      final client = MockClient((request) async {
+        final response = [
+          {
+            'Problema Solucionado': 'Problem 1',
+            'Cliente Atendido': 'Client 1',
+            'Hora de Inicio': 1609459200,
+            'Tiempo de Duración': 120,
+            'Evaluación': 5,
+          },
+          {
+            'Problema Solucionado': 'Problem 2',
+            'Cliente Atendido': 'Client 2',
+            'Hora de Inicio': 1609462800,
+            'Tiempo de Duración': 90,
+            'Evaluación': 4,
+          },
+        ];
+        return http.Response(json.encode(response), 200);
+      });
+
+      await tester.pumpWidget(
+        GetMaterialApp(
+          home: HomePageSup(
+            loggedname: 'test',
+            loggedEmail: 'test@example.com',
+            loggedPassword: 'password',
+            //client: client,
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Problem 1'), findsOneWidget);
+      expect(find.text('Client 1'), findsOneWidget);
+      expect(find.text('120'), findsOneWidget);
+      expect(find.text('5'), findsOneWidget);
+      expect(find.text('Problem 2'), findsOneWidget);
+      expect(find.text('Client 2'), findsOneWidget);
+      expect(find.text('90'), findsOneWidget);
+      expect(find.text('4'), findsOneWidget);
+    });
+
+    testWidgets('displays error message on fetch failure', (WidgetTester tester) async {
+      final client = MockClient((request) async {
+        return http.Response('Not Found', 404);
+      });
+
+      await tester.pumpWidget(
+        GetMaterialApp(
+          home: HomePageSup(
+            loggedname: 'test',
+            loggedEmail: 'test@example.com',
+            loggedPassword: 'password',
+            //client: client,
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('Failed to fetch reports'), findsOneWidget);
+    });
+  });
+
+  group('Report Model Test', () {
+    test('Report fromJson returns correct data', () {
+      final json = {
+        'Problema Solucionado': 'Problem 1',
+        'Cliente Atendido': 'Client 1',
+        'Hora de Inicio': 4,
+        'Tiempo de Duración': 120,
+        'Evaluación': 5,
+      };
+
+      final report = Report.fromJson(json);
+
+      expect(report.problema, 'Problem 1');
+      expect(report.cliente, 'Client 1');
+      expect(report.horaInicio, 4);
+      expect(report.duracion, 120);
+      expect(report.evaluacion, 5);
+    });
+
+    test('Report toJson returns correct data', () {
+      final report = Report(
+        problema: 'Problem 1',
+        cliente: 'Client 1',
+        horaInicio: 4,
+        duracion: 120,
+        evaluacion: 5,
+      );
+
+      final json = report.toJson();
+
+      expect(json['Problema Solucionado'], 'Problem 1');
+      expect(json['Cliente Atendido'], 'Client 1');
+      expect(json['Hora de Inicio'], 4);
+      expect(json['Tiempo de Duración'], 120);
+      expect(json['Evaluación'], 5);
+    });
+  });
 
   });
 }

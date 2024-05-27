@@ -1,43 +1,20 @@
-import 'dart:convert';
 import 'package:controlarpersonal_remoto/ui/pages/content/Report.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/_http/mock/http_request_mock.dart';
 import '../authentication/login.dart';
-import 'package:http/http.dart' as http;
-
-class Report {
-  final String problema;
-  final String cliente;
-  final int horaInicio;
-  final int duracion;
-  final int? evaluacion;
-
-  Report({
-    required this.problema,
-    required this.cliente,
-    required this.horaInicio,
-    required this.duracion,
-    this.evaluacion,
-  });
-
-  factory Report.fromJson(Map<String, dynamic> json) {
-    return Report(
-      problema: json['Problema'],
-      cliente: json['Cliente'],
-      horaInicio: json['Hora'],
-      duracion: json['Duracion'],
-      evaluacion: json['Evaluacion'],
-    );
-  }
-}
+import '../../../domain/models/report.dart';
+import '../../../domain/repositories/report_repository.dart';
 
 class HomePageSup extends StatefulWidget {
   const HomePageSup({
     Key? key,
+    required this.loggedname,
     required this.loggedEmail,
-    required this.loggedPassword,
+    required this.loggedPassword, 
+    //required MockClient client,
   }) : super(key: key);
-
+  final String loggedname;
   final String loggedEmail;
   final String loggedPassword;
 
@@ -46,6 +23,7 @@ class HomePageSup extends StatefulWidget {
 }
 
 class _HomePageSupState extends State<HomePageSup> {
+  final ReportRepository reportRepository = ReportRepository();
   List<Report> reports = [];
 
   @override
@@ -56,22 +34,14 @@ class _HomePageSupState extends State<HomePageSup> {
 
   Future<void> _fetchReports() async {
     try {
-      final response = await http.get(Uri.parse('https://retoolapi.dev/EpdEeL/data'));
-      
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = json.decode(response.body);
-        print(responseData);
-        setState(() {
-          reports = responseData.map((data) => Report.fromJson(data)).toList();
-        });
-      } else {
-        throw Exception('Failed to fetch reports');
-      }
+      final fetchedReports = await reportRepository.fetchReports();
+      setState(() {
+        reports = fetchedReports;
+      });
     } catch (e) {
       print('Error fetching reports: $e');
     }
   }
-
 
   void _showReportDialog(BuildContext context) {
     showDialog(
@@ -107,58 +77,60 @@ class _HomePageSupState extends State<HomePageSup> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              key: const Key('ButtonReport'),
-              onPressed: () {
-                _showReportDialog(context);
-              },
-              child: const Text('Enviar Reporte de Trabajo'),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Reportes enviados:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 15,
-                  columns: const [
-                    DataColumn(
-                      label: Flexible(child: Text('Problema')),
-                    ),
-                    DataColumn(
-                      label: Flexible(child: Text('Cliente')),
-                    ),
-                    DataColumn(
-                      label: Flexible(child: Text('Hora')),
-                    ),
-                    DataColumn(
-                      label: Flexible(child: Text('Duración')),
-                    ),
-                    DataColumn(
-                      label: Flexible(child: Text('Evaluación')),
-                    ),
-                  ],
-                  rows: reports.map((report) {
-                    print(report.evaluacion);
-                    return DataRow(cells: [
-                      DataCell(Text(report.problema)),
-                      DataCell(Text(report.cliente)),
-                      DataCell(Text(report.horaInicio.toString())),
-                      DataCell(Text(report.duracion.toString())),
-                      DataCell(Text(report.evaluacion?.toString() ?? ''))
-                    ]);
-                  }).toList(),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                key: const Key('ButtonReport'),
+                onPressed: () {
+                  _showReportDialog(context);
+                },
+                child: const Text('Enviar Reporte de Trabajo'),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Reportes enviados:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columnSpacing: 15,
+                    columns: const [
+                      DataColumn(
+                        label: Flexible(child: Text('Problema Solucionado')),
+                      ),
+                      DataColumn(
+                        label: Flexible(child: Text('Cliente Atendido')),
+                      ),
+                      DataColumn(
+                        label: Flexible(child: Text('Hora de Inicio')),
+                      ),
+                      DataColumn(
+                        label: Flexible(child: Text('Tiempo de Duración')),
+                      ),
+                      DataColumn(
+                        label: Flexible(child: Text('Evaluación')),
+                      ),
+                    ],
+                    rows: reports.map((report) {
+                      return DataRow(cells: [
+                        DataCell(Text(report.problema)),
+                        DataCell(Text(report.cliente)),
+                        DataCell(Text(report.horaInicio.toString())),
+                        DataCell(Text(report.duracion.toString())),
+                        DataCell(Text(report.evaluacion?.toString() ?? ''))
+                      ]);
+                    }).toList(),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

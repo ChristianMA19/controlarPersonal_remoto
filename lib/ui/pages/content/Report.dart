@@ -1,9 +1,9 @@
 import 'package:controlarpersonal_remoto/ui/pages/content/home_sup.dart';
+import '../../../domain/models/report.dart';
 import 'package:flutter/material.dart';
 
 class ReportDialog extends StatelessWidget {
-
-  final Function(Report) onReportSubmitted; 
+  final Function(Report) onReportSubmitted;
 
   ReportDialog({required this.onReportSubmitted});
   @override
@@ -12,15 +12,18 @@ class ReportDialog extends StatelessWidget {
     TextEditingController clienteController = TextEditingController();
     TextEditingController horaInicioController = TextEditingController();
     TextEditingController duracionController = TextEditingController();
+    TextEditingController evaluacionController = TextEditingController();
+
     return AlertDialog(
       title: const Text('Enviar Reporte de Trabajo'),
       content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-           children: [
+          children: [
             TextField(
               controller: problemaController,
-              decoration: const InputDecoration(labelText: 'Problema Solucionado'),
+              decoration:
+                  const InputDecoration(labelText: 'Problema Solucionado'),
             ),
             TextField(
               controller: clienteController,
@@ -33,7 +36,8 @@ class ReportDialog extends StatelessWidget {
             ),
             TextField(
               controller: duracionController,
-              decoration: const InputDecoration(labelText: 'Tiempo de Duración'),
+              decoration:
+                  const InputDecoration(labelText: 'Tiempo de Duración'),
               keyboardType: TextInputType.number,
             ),
           ],
@@ -42,29 +46,29 @@ class ReportDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); 
+            Navigator.of(context).pop();
           },
           child: const Text('Cancelar'),
         ),
         ElevatedButton(
           onPressed: () {
-            
             String problema = problemaController.text;
             String cliente = clienteController.text;
-             int horaInicio = int.parse(horaInicioController.text);
+            int horaInicio = int.parse(horaInicioController.text);
             int duracion = int.parse(duracionController.text);
+            int evaluacion = int.parse(evaluacionController.text);
 
-          
             Report newReport = Report(
               problema: problema,
               cliente: cliente,
               horaInicio: horaInicio,
               duracion: duracion,
+              evaluacion: evaluacion,
             );
 
             onReportSubmitted(newReport);
 
-            Navigator.of(context).pop(); 
+            Navigator.of(context).pop();
           },
           child: const Text('Enviar'),
         ),

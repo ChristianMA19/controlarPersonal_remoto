@@ -148,16 +148,18 @@ class _LoginPageState extends State<LoginScreen> {
                                 _passwordController.text == "123456") {
                               Get.offAll(HomePageSup(
                                 key: const Key('HomePageSup'),
+                                loggedname: 'Juancho',
                                 loggedEmail: _emailController.text,
                                 loggedPassword: _passwordController.text,
                               ));
-                            } else{
+                            } else {
                               bool entrar = await _login(_emailController.text,
                                 _passwordController.text);
                               Loggy('entrar: $entrar');
                               if (entrar) {
                               Get.offAll(HomePageSup(
                                 key: const Key('HomePageSup'),
+                                loggedname: 'Camilo',
                                 loggedEmail: _emailController.text,
                                 loggedPassword: _passwordController.text,
                               ));
