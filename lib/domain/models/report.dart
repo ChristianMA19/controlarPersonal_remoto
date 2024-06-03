@@ -11,7 +11,7 @@ class Report {
   int? id;
   int clienteID;
   String descripcion;
-  int duracion;
+  String duracion;
   int evaluacion;
   DateTime horaInicio;
 

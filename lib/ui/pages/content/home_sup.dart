@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import '../authentication/login.dart';
 import '../../controller/Report_controller.dart';
 import '../../../domain/models/report.dart';
-import '../../../domain/repositories/report_repository.dart';
-import '../../../domain/use_case/reports_usecase.dart';
 
 class HomePageSup extends StatefulWidget {
   const HomePageSup({
@@ -21,19 +19,70 @@ class HomePageSup extends StatefulWidget {
   final String loggedPassword;
 
   @override
-  _HomePageSupState createState() => _HomePageSupState();
+  State<HomePageSup> createState() => _HomePageSupState();
 }
 
 class _HomePageSupState extends State<HomePageSup> {
-  late ReportController reportController;
-  
-  
+  final ReportController reportController = Get.find();
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  int queue = 0;
+
   @override
   void initState() {
     super.initState();
-    reportController = Get.find<ReportController>();
-    // Iniciar la carga de reportes, si es necesario
-    reportController.obtenerReportesi();
+    initConnectivity();
+
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnection as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>;
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+
+    try {
+      result = (await _connectivity.checkConnectivity()) as ConnectivityResult;
+    } on PlatformException catch (e) {
+      print('No se pudo verificar el estado de la conectividad: $e');
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+    return _updateConnection(result);
+  }
+
+  Future<void> _updateConnection(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+    });
+
+    if (_connectionStatus != ConnectivityResult.none) {
+      Report a = Report(
+        clienteID: 1,
+        descripcion: 'Test',
+        duracion: 'Test',
+        evaluacion: 0,
+        horaInicio: DateTime.now(),
+      );
+      await reportController.agregarReportesi(a, 2);
+      await reportController.obtenerReportesi();
+      if (queue > 0) {
+        Get.offAll(() => HomePageSup(
+              loggedname: widget.loggedname,
+              loggedEmail: widget.loggedEmail,
+              loggedPassword: widget.loggedPassword,
+            ));
+        queue = 0;
+      }
+    }
   }
 
   void _showReportDialog(BuildContext context) {
@@ -228,7 +277,7 @@ class _ReportDialogState extends State<ReportDialog> {
               final newReport = Report(
                 clienteID: int.parse(_clienteIDController.text),
                 descripcion: _descripcionController.text,
-                duracion: int.parse(_duracionController.text),
+                duracion: _duracionController.text,
                 evaluacion: int.parse(_evaluacionController.text),
                 horaInicio: _horaInicio,
               );
