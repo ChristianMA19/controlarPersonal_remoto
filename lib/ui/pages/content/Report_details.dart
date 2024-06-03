@@ -1,18 +1,18 @@
-import 'package:controlarpersonal_remoto/ui/pages/content/home_sup.dart';
-import '../../../domain/models/report.dart';
 import 'package:flutter/material.dart';
+import '../../../domain/models/report.dart';
 
 class ReportDialog extends StatelessWidget {
   final Function(Report) onReportSubmitted;
 
   ReportDialog({required this.onReportSubmitted});
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController problemaController = TextEditingController();
-    TextEditingController clienteController = TextEditingController();
-    TextEditingController horaInicioController = TextEditingController();
+    TextEditingController clienteIDController = TextEditingController();
+    TextEditingController descripcionController = TextEditingController();
     TextEditingController duracionController = TextEditingController();
     TextEditingController evaluacionController = TextEditingController();
+    TextEditingController horaInicioController = TextEditingController();
 
     return AlertDialog(
       title: const Text('Enviar Reporte de Trabajo'),
@@ -21,24 +21,28 @@ class ReportDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              controller: problemaController,
-              decoration:
-                  const InputDecoration(labelText: 'Problema Solucionado'),
+              controller: clienteIDController,
+              decoration: const InputDecoration(labelText: 'Cliente ID'),
+              keyboardType: TextInputType.number,
             ),
             TextField(
-              controller: clienteController,
-              decoration: const InputDecoration(labelText: 'Cliente Atendido'),
+              controller: descripcionController,
+              decoration: const InputDecoration(labelText: 'Descripción'),
+            ),
+            TextField(
+              controller: duracionController,
+              decoration: const InputDecoration(labelText: 'Duración (minutos)'),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: evaluacionController,
+              decoration: const InputDecoration(labelText: 'Evaluación'),
+              keyboardType: TextInputType.number,
             ),
             TextField(
               controller: horaInicioController,
               decoration: const InputDecoration(labelText: 'Hora de Inicio'),
               keyboardType: TextInputType.datetime,
-            ),
-            TextField(
-              controller: duracionController,
-              decoration:
-                  const InputDecoration(labelText: 'Tiempo de Duración'),
-              keyboardType: TextInputType.number,
             ),
           ],
         ),
@@ -52,18 +56,18 @@ class ReportDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            String problema = problemaController.text;
-            String cliente = clienteController.text;
-            int horaInicio = int.parse(horaInicioController.text);
+            int clienteID = int.parse(clienteIDController.text);
+            String descripcion = descripcionController.text;
             int duracion = int.parse(duracionController.text);
             int evaluacion = int.parse(evaluacionController.text);
+            DateTime horaInicio = DateTime.parse(horaInicioController.text);
 
             Report newReport = Report(
-              problema: problema,
-              cliente: cliente,
-              horaInicio: horaInicio,
+              clienteID: clienteID,
+              descripcion: descripcion,
               duracion: duracion,
               evaluacion: evaluacion,
+              horaInicio: horaInicio,
             );
 
             onReportSubmitted(newReport);

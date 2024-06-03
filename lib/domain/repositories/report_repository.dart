@@ -1,23 +1,52 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../models/report.dart';
+import 'package:loggy/loggy.dart';
+import '../../domain/models/report.dart';
+import '../../domain/repositories/ireport_repository.dart';
+import '../../data/datasources/remote/report_datasource.dart';
 
-class ReportRepository {
-  final String apiUrl = 'https://retoolapi.dev/pfWQZi/data';
+class ReportRepository implements IReportRepository {
+  late ReportDatasource iReportDatasource;
 
-  Future<List<Report>> fetchReports() async {
+  ReportRepository() {
+    logInfo("Starting ReportRepository");
+    iReportDatasource = ReportDatasource();
+  }
+
+  @override
+  Future<bool> agregarReportesi(Report report, int status) async {
+    try{
+      await iReportDatasource.agregarReportesi(report, status);
+      return true;
+    } catch (error) {
+      logError('Error al agregar el reporte al repositorio: $error');
+      return false;
+    }
+  }
+
+  @override
+  Future<void> eliminarReportesi(String id) async {
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      await iReportDatasource.eliminarReportesi(id);
+    } catch (error) {
+      logError('Error al eliminar el reporte en el repositorio: $error');
+    }
+  }
 
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = json.decode(response.body);
-        return responseData.map((data) => Report.fromJson(data)).toList();
-      } else {
-        throw Exception('Failed to fetch reports');
-      }
-    } catch (e) {
-      print('Error fetching reports: $e');
-      throw Exception('Failed to fetch reports');
+  @override
+  Future<void> evaluarReportesi(Report report) async {
+    try{
+      await iReportDatasource.evaluarReportesi(report);
+    } catch (error) {
+      logError('Error al actualizar el reporte en el repositorio: $error');
+    }
+  }
+
+  @override
+  Future<List<Report>> obtenerReportesi() async {
+    try {
+      return await iReportDatasource.obtenerReportesi();
+    } catch (error) {
+      logError('Error al obtener los reportes en el repositorio: $error');
+      return [];
     }
   }
 }

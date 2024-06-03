@@ -1,25 +1,41 @@
 class Report {
-  final String problema;
-  final String cliente;
-  final int horaInicio;
-  final int duracion;
-  final int? evaluacion;
-
   Report({
-    required this.problema,
-    required this.cliente,
-    required this.horaInicio,
+    this.id,
+    required this.clienteID,
+    required this.descripcion,
     required this.duracion,
-    this.evaluacion,
+    required this.evaluacion,
+    required this.horaInicio,
   });
 
+  int? id;
+  int clienteID;
+  String descripcion;
+  int duracion;
+  int evaluacion;
+  DateTime horaInicio;
+
   factory Report.fromJson(Map<String, dynamic> json) {
-    return Report(
-      problema: json['Problema Solucionado'],
-      cliente: json['Cliente Atendido'],
-      horaInicio: json['Hora de Inicio'],
-      duracion: json['Tiempo de Duración'],
-      evaluacion: json['Evaluación'],
+    Report us = Report(
+      id: json['id'],
+      clienteID: json['clienteID'],
+      descripcion: json['descripcion'],
+      duracion: json['duracion'],
+      evaluacion: json['evaluacion'],
+      horaInicio: DateTime.parse(json['horaInicio']),
     );
+    return us;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'clienteID': clienteID,
+      'descripcion': descripcion,
+      'duracion': duracion,
+      'evaluacion': evaluacion,
+      'horaInicio': horaInicio.toString(),
+    };
+    return data;
   }
 }
