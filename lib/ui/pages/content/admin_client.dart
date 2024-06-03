@@ -82,7 +82,7 @@ Widget _getXlistView() {
         },
         child: Card(
           child: ListTile(
-            title: Text(user.name),
+            title: Text("Id ${user.id}, Nombre: ${user.name}"),
             onTap: () {
               Get.to(() => const Clientpageadmin(),
                 arguments: [user, user.id]);
