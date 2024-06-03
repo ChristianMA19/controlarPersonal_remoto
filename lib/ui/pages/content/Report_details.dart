@@ -56,10 +56,10 @@ class ReportDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            int clienteID = int.parse(clienteIDController.text);
+            String clienteID = clienteIDController.text;
             String descripcion = descripcionController.text;
-            String duracion = duracionController.text;
-            int evaluacion = int.parse(evaluacionController.text);
+            int duracion = int.parse(duracionController.text);
+            String evaluacion = evaluacionController.text;
             DateTime horaInicio = DateTime.parse(horaInicioController.text);
 
             Report newReport = Report(

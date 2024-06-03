@@ -9,10 +9,10 @@ class Report {
   });
 
   int? id;
-  int clienteID;
+  String clienteID;
   String descripcion;
-  String duracion;
-  int evaluacion;
+  int duracion;
+  String evaluacion;
   DateTime horaInicio;
 
   factory Report.fromJson(Map<String, dynamic> json) {

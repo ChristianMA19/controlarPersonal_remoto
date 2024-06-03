@@ -1,7 +1,4 @@
-import 'dart:async';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../authentication/login.dart';
 import '../../controller/Report_controller.dart';
@@ -24,66 +21,7 @@ class HomePageSup extends StatefulWidget {
 
 class _HomePageSupState extends State<HomePageSup> {
   final ReportController reportController = Get.find();
-  ConnectivityResult _connectionStatus = ConnectivityResult.none;
-  final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-  int queue = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    initConnectivity();
-
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnection as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>;
-  }
-
-  @override
-  void dispose() {
-    _connectivitySubscription.cancel();
-    super.dispose();
-  }
-
-  Future<void> initConnectivity() async {
-    late ConnectivityResult result;
-
-    try {
-      result = (await _connectivity.checkConnectivity()) as ConnectivityResult;
-    } on PlatformException catch (e) {
-      print('No se pudo verificar el estado de la conectividad: $e');
-      return;
-    }
-    if (!mounted) {
-      return;
-    }
-    return _updateConnection(result);
-  }
-
-  Future<void> _updateConnection(ConnectivityResult result) async {
-    setState(() {
-      _connectionStatus = result;
-    });
-
-    if (_connectionStatus != ConnectivityResult.none) {
-      Report a = Report(
-        clienteID: 1,
-        descripcion: 'Test',
-        duracion: 'Test',
-        evaluacion: 0,
-        horaInicio: DateTime.now(),
-      );
-      await reportController.agregarReportesi(a, 2);
-      await reportController.obtenerReportesi();
-      if (queue > 0) {
-        Get.offAll(() => HomePageSup(
-              loggedname: widget.loggedname,
-              loggedEmail: widget.loggedEmail,
-              loggedPassword: widget.loggedPassword,
-            ));
-        queue = 0;
-      }
-    }
-  }
+  bool showAllReports = false; // Estado para mostrar todos los reportes
 
   void _showReportDialog(BuildContext context) {
     showDialog(
@@ -118,62 +56,86 @@ class _HomePageSupState extends State<HomePageSup> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                key: const Key('ButtonReport'),
-                onPressed: () {
-                  _showReportDialog(context);
-                },
-                child: const Text('Enviar Reporte de Trabajo'),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Reportes enviados:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Obx(() {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              key: const Key('ButtonReport'),
+              onPressed: () {
+                _showReportDialog(context);
+              },
+              child: const Text('Enviar Reporte de Trabajo'),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Reportes enviados:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: [
+                    DataTable(
                       columnSpacing: 15,
                       columns: const [
                         DataColumn(
-                          label: Flexible(child: Text('Cliente ID')),
+                          label: Text('Cliente ID'),
                         ),
                         DataColumn(
-                          label: Flexible(child: Text('Descripción')),
+                          label: Text('Descripción'),
                         ),
                         DataColumn(
-                          label: Flexible(child: Text('Duración')),
+                          label: Text('Duración'),
                         ),
                         DataColumn(
-                          label: Flexible(child: Text('Evaluación')),
+                          label: Text('Evaluación'),
                         ),
                         DataColumn(
-                          label: Flexible(child: Text('Hora de Inicio')),
+                          label: Text('Hora de Inicio'),
                         ),
                       ],
-                      rows: reportController.obtReports.map((report) {
-                        return DataRow(cells: [
-                          DataCell(Text(report.clienteID.toString())),
-                          DataCell(Text(report.descripcion)),
-                          DataCell(Text(report.duracion.toString())),
-                          DataCell(Text(report.evaluacion.toString())),
-                          DataCell(Text(report.horaInicio.toString())),
-                        ]);
-                      }).toList(),
+                      rows: showAllReports
+                          ? reportController.obtReports
+                              .map((report) {
+                                return DataRow(cells: [
+                                  DataCell(Text(report.clienteID.toString())),
+                                  DataCell(Text(report.descripcion)),
+                                  DataCell(Text(report.duracion.toString())),
+                                  DataCell(Text(report.evaluacion.toString())),
+                                  DataCell(Text(report.horaInicio.toString())),
+                                ]);
+                              })
+                              .toList()
+                          : reportController.obtReports
+                              .take(5) // Mostrar solo los primeros 5 reportes
+                              .map((report) {
+                                return DataRow(cells: [
+                                  DataCell(Text(report.clienteID.toString())),
+                                  DataCell(Text(report.descripcion)),
+                                  DataCell(Text(report.duracion.toString())),
+                                  DataCell(Text(report.evaluacion.toString())),
+                                  DataCell(Text(report.horaInicio.toString())),
+                                ]);
+                              })
+                              .toList(),
                     ),
-                  );
-                }),
+                    if (reportController.obtReports.length > 5)
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            showAllReports = !showAllReports;
+                          });
+                        },
+                        child: Text(showAllReports ? 'Mostrar menos' : 'Mostrar más'),
+                      ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -273,12 +235,18 @@ class _ReportDialogState extends State<ReportDialog> {
       actions: [
         TextButton(
           onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () {
             if (_formKey.currentState!.validate()) {
               final newReport = Report(
-                clienteID: int.parse(_clienteIDController.text),
+                clienteID: _clienteIDController.text,
                 descripcion: _descripcionController.text,
-                duracion: _duracionController.text,
-                evaluacion: int.parse(_evaluacionController.text),
+                duracion: int.parse(_duracionController.text),
+                evaluacion: _evaluacionController.text,
                 horaInicio: _horaInicio,
               );
               widget.onReportSubmitted(newReport);

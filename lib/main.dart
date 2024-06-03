@@ -1,5 +1,3 @@
-import 'package:controlarpersonal_remoto/domain/models/report.dart';
-import 'package:controlarpersonal_remoto/domain/repositories/ireport_repository.dart';
 import 'package:controlarpersonal_remoto/domain/repositories/report_repository.dart';
 import 'package:controlarpersonal_remoto/domain/repositories/repository.dart';
 import 'package:controlarpersonal_remoto/domain/use_case/authentication_usecase.dart';
@@ -21,13 +19,14 @@ void main() {
   );
 
   Get.put(Repository());
-  Get.put(IReports(Get.find<ReportRepository>()));
-  Get.put<ReportController>(ReportController(reportUseCase: Get.find<IReports>()));
   Get.put(ReportRepository());
+  Get.put(IReports(Get.put(ReportRepository())));
+  Get.put<ReportController>(ReportController(reportUseCase: Get.find<IReports>()));
   Get.put(AuthenticationUseCase());
   Get.put(UserUseCase());
   Get.put(AuthenticationController());
   Get.put(UserController());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
