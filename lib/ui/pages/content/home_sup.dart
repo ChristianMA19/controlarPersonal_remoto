@@ -82,6 +82,12 @@ class _HomePageSupState extends State<HomePageSup> {
                       columnSpacing: 15,
                       columns: const [
                         DataColumn(
+                          label: Text('US ID'),
+                        ),
+                        DataColumn(
+                          label: Text('Correo Soporte'),
+                        ),
+                        DataColumn(
                           label: Text('Cliente ID'),
                         ),
                         DataColumn(
@@ -98,29 +104,26 @@ class _HomePageSupState extends State<HomePageSup> {
                         ),
                       ],
                       rows: showAllReports
-                          ? reportController.obtReports
-                              .map((report) {
-                                return DataRow(cells: [
-                                  DataCell(Text(report.clienteID.toString())),
-                                  DataCell(Text(report.descripcion)),
-                                  DataCell(Text(report.duracion.toString())),
-                                  DataCell(Text(report.evaluacion.toString())),
-                                  DataCell(Text(report.horaInicio.toString())),
-                                ]);
-                              })
-                              .toList()
+                          ? reportController.obtReports.map((report) {
+                              return DataRow(cells: [
+                                DataCell(Text(report.clienteID.toString())),
+                                DataCell(Text(report.descripcion)),
+                                DataCell(Text(report.duracion.toString())),
+                                DataCell(Text(report.evaluacion.toString())),
+                                DataCell(Text(report.horaInicio.toString())),
+                              ]);
+                            }).toList()
                           : reportController.obtReports
                               .take(5) // Mostrar solo los primeros 5 reportes
                               .map((report) {
-                                return DataRow(cells: [
-                                  DataCell(Text(report.clienteID.toString())),
-                                  DataCell(Text(report.descripcion)),
-                                  DataCell(Text(report.duracion.toString())),
-                                  DataCell(Text(report.evaluacion.toString())),
-                                  DataCell(Text(report.horaInicio.toString())),
-                                ]);
-                              })
-                              .toList(),
+                              return DataRow(cells: [
+                                DataCell(Text(report.clienteID.toString())),
+                                DataCell(Text(report.descripcion)),
+                                DataCell(Text(report.duracion.toString())),
+                                DataCell(Text(report.evaluacion.toString())),
+                                DataCell(Text(report.horaInicio.toString())),
+                              ]);
+                            }).toList(),
                     ),
                     if (reportController.obtReports.length > 5)
                       ElevatedButton(
@@ -129,7 +132,8 @@ class _HomePageSupState extends State<HomePageSup> {
                             showAllReports = !showAllReports;
                           });
                         },
-                        child: Text(showAllReports ? 'Mostrar menos' : 'Mostrar más'),
+                        child: Text(
+                            showAllReports ? 'Mostrar menos' : 'Mostrar más'),
                       ),
                   ],
                 ),
@@ -153,6 +157,8 @@ class ReportDialog extends StatefulWidget {
 
 class _ReportDialogState extends State<ReportDialog> {
   final _formKey = GlobalKey<FormState>();
+  final _usidController = TextEditingController();
+  final _correoSoporteController = TextEditingController();
   final _clienteIDController = TextEditingController();
   final _descripcionController = TextEditingController();
   final _duracionController = TextEditingController();
@@ -168,6 +174,28 @@ class _ReportDialogState extends State<ReportDialog> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              TextFormField(
+                controller: _usidController,
+                decoration: InputDecoration(labelText: 'usid'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese el US ID';
+                  }
+                  return null;
+                }
+              ),
+              TextFormField(
+                controller: _usidController,
+                decoration: InputDecoration(labelText: 'correo Soporte'),
+                keyboardType: TextInputType.text,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese el correo del soporte';
+                  }
+                  return null;
+                }
+              ),
               TextFormField(
                 controller: _clienteIDController,
                 decoration: InputDecoration(labelText: 'Cliente ID'),
@@ -243,7 +271,9 @@ class _ReportDialogState extends State<ReportDialog> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               final newReport = Report(
-                clienteID: _clienteIDController.text,
+                usid: int.parse(_usidController.text),
+                correoSoporte: _correoSoporteController.text,
+                clienteID: int.parse(_clienteIDController.text),
                 descripcion: _descripcionController.text,
                 duracion: int.parse(_duracionController.text),
                 evaluacion: _evaluacionController.text,

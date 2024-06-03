@@ -35,6 +35,7 @@ class IDataBase implements FuncLocalReportDatasource {
     await db.execute('''
       CREATE TABLE reports (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        correoSoporte TEXT,
         clienteID TEXT,
         descripcion TEXT,
         duracion INTEGER,

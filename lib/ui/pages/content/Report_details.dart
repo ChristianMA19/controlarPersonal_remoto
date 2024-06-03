@@ -8,10 +8,11 @@ class ReportDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController usidController = TextEditingController();
+    TextEditingController correoSoporteController = TextEditingController();
     TextEditingController clienteIDController = TextEditingController();
     TextEditingController descripcionController = TextEditingController();
     TextEditingController duracionController = TextEditingController();
-    TextEditingController evaluacionController = TextEditingController();
     TextEditingController horaInicioController = TextEditingController();
 
     return AlertDialog(
@@ -20,6 +21,16 @@ class ReportDialog extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            TextField(
+              controller: usidController,
+              decoration: const InputDecoration(labelText: 'US ID'),
+              keyboardType: TextInputType.number,
+            ),
+            TextField(
+              controller: correoSoporteController,
+              decoration: const InputDecoration(labelText: 'Correo Soporte'),
+              keyboardType: TextInputType.number,
+            ),
             TextField(
               controller: clienteIDController,
               decoration: const InputDecoration(labelText: 'Cliente ID'),
@@ -31,12 +42,8 @@ class ReportDialog extends StatelessWidget {
             ),
             TextField(
               controller: duracionController,
-              decoration: const InputDecoration(labelText: 'Duración (minutos)'),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: evaluacionController,
-              decoration: const InputDecoration(labelText: 'Evaluación'),
+              decoration:
+                  const InputDecoration(labelText: 'Duración (minutos)'),
               keyboardType: TextInputType.number,
             ),
             TextField(
@@ -56,17 +63,20 @@ class ReportDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            String clienteID = clienteIDController.text;
+            int usid = int.parse(usidController.text);
+            String correoSoporte = correoSoporteController.text;
+            int clienteID = int.parse(clienteIDController.text);
             String descripcion = descripcionController.text;
             int duracion = int.parse(duracionController.text);
-            String evaluacion = evaluacionController.text;
             DateTime horaInicio = DateTime.parse(horaInicioController.text);
 
             Report newReport = Report(
+              usid: usid,
+              correoSoporte: correoSoporte,
               clienteID: clienteID,
               descripcion: descripcion,
               duracion: duracion,
-              evaluacion: evaluacion,
+              evaluacion: "", // No se agrega evaluación en este punto
               horaInicio: horaInicio,
             );
 

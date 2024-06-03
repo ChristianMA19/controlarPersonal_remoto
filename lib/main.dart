@@ -21,7 +21,8 @@ void main() {
   Get.put(Repository());
   Get.put(ReportRepository());
   Get.put(IReports(Get.put(ReportRepository())));
-  Get.put<ReportController>(ReportController(reportUseCase: Get.find<IReports>()));
+  Get.put<ReportController>(
+      ReportController(reportUseCase: Get.find<IReports>()));
   Get.put(AuthenticationUseCase());
   Get.put(UserUseCase());
   Get.put(AuthenticationController());

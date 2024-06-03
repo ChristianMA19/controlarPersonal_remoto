@@ -1,6 +1,8 @@
 class Report {
   Report({
     this.id,
+    required this.usid,
+    required this.correoSoporte,
     required this.clienteID,
     required this.descripcion,
     required this.duracion,
@@ -9,15 +11,19 @@ class Report {
   });
 
   int? id;
-  String clienteID;
+  int usid; 
+  String correoSoporte;
+  int clienteID; 
   String descripcion;
-  int duracion;
+  int duracion; 
   String evaluacion;
   DateTime horaInicio;
 
   factory Report.fromJson(Map<String, dynamic> json) {
     Report us = Report(
       id: json['id'],
+      usid: json['usid'],
+      correoSoporte: json['correoSoporte'],
       clienteID: json['clienteID'],
       descripcion: json['descripcion'],
       duracion: json['duracion'],
@@ -30,6 +36,8 @@ class Report {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'id': id,
+      'usid': usid,
+      'correoSoporte': correoSoporte,
       'clienteID': clienteID,
       'descripcion': descripcion,
       'duracion': duracion,
