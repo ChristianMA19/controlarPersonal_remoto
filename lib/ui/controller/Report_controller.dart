@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:loggy/loggy.dart';
 import '../../domain/models/report.dart';
@@ -14,6 +15,11 @@ class ReportController extends GetxController {
   onInit() {
     super.onInit();
     obtenerReportesi();
+  }
+
+  Future<bool> checkConnectivity() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi;
   }
 
   Future<void> agregarReportesi(report, status) async {

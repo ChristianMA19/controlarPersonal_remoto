@@ -32,8 +32,10 @@ class _HomePageSupState extends State<HomePageSup> {
         return ReportDialog(
           onReportSubmitted: (Report report) async {
             Loggy('Reporte enviado: $report');
+            int status = await reportController.checkConnectivity() ? 0 : 1;
+            Loggy('Status: $status');
             await reportController.agregarReportesi(
-                report, 'status'); // Ajustar el status según sea necesario
+                report, status); // Ajustar el status según sea necesario
           },
         );
       },
