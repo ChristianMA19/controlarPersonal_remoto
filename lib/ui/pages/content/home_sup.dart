@@ -31,6 +31,7 @@ class _HomePageSupState extends State<HomePageSup> {
       builder: (BuildContext context) {
         return ReportDialog(
           onReportSubmitted: (Report report) async {
+            Loggy('Reporte enviado: $report');
             await reportController.agregarReportesi(
                 report, 'status'); // Ajustar el status según sea necesario
           },
@@ -87,47 +88,48 @@ class _HomePageSupState extends State<HomePageSup> {
       ),
     );
   }
-  Widget _getXlistView() {
-  // Filtrar los reportes por correoSoporte igual a loggedEmail
-  List<Report> filteredReports = reportController.finReports
-      .where((report) => report.correoSoporte == widget.loggedEmail)
-      .toList();
 
-  return Container(
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: ListView.builder(
-      itemCount: filteredReports.length,
-      itemBuilder: (context, index) {
-        Report report = filteredReports[index];
-        return ListTile(
-          title: Row(
-            children: [
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('form ID: ${report.id}'),
-                    const SizedBox(width: 5),
-                    Text('Evaluation: ${report.evaluacion}'),
-                  ],
+  Widget _getXlistView() {
+    // Filtrar los reportes por correoSoporte igual a loggedEmail
+    List<Report> filteredReports = reportController.finReports
+        .where((report) => report.correoSoporte == widget.loggedEmail)
+        .toList();
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListView.builder(
+        itemCount: filteredReports.length,
+        itemBuilder: (context, index) {
+          Report report = filteredReports[index];
+          return ListTile(
+            title: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('form ID: ${report.id}'),
+                      const SizedBox(width: 5),
+                      Text('Evaluation: ${report.evaluacion}'),
+                    ],
+                  ),
                 ),
-              ),
-              TextButton(
-                onPressed: () {
-                  _showEvaluationDialog(context, report);
-                },
-                child: const Text('See'),
-              ),
-            ],
-          ),
-        );
-      },
-    ),
-  );
-}
+                TextButton(
+                  onPressed: () {
+                    _showEvaluationDialog(context, report);
+                  },
+                  child: const Text('See'),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   void _showEvaluationDialog(BuildContext context, Report report) {
     double _rating = report.evaluacion != null
@@ -186,7 +188,6 @@ class _HomePageSupState extends State<HomePageSup> {
       },
     );
   }
-
 }
 
 class ReportDialog extends StatefulWidget {
@@ -226,10 +227,10 @@ class _ReportDialogState extends State<ReportDialog> {
                     return 'Por favor ingrese el US ID';
                   }
                   return null;
-                }
+                },
               ),
               TextFormField(
-                controller: _usidController,
+                controller: _correoSoporteController,
                 decoration: InputDecoration(labelText: 'correo Soporte'),
                 keyboardType: TextInputType.text,
                 validator: (value) {
@@ -237,7 +238,7 @@ class _ReportDialogState extends State<ReportDialog> {
                     return 'Por favor ingrese el correo del soporte';
                   }
                   return null;
-                }
+                },
               ),
               TextFormField(
                 controller: _clienteIDController,
@@ -267,17 +268,6 @@ class _ReportDialogState extends State<ReportDialog> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Por favor ingrese la duración';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _evaluacionController,
-                decoration: InputDecoration(labelText: 'Evaluación'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese la evaluación';
                   }
                   return null;
                 },
@@ -319,7 +309,7 @@ class _ReportDialogState extends State<ReportDialog> {
                 clienteID: int.parse(_clienteIDController.text),
                 descripcion: _descripcionController.text,
                 duracion: int.parse(_duracionController.text),
-                evaluacion: _evaluacionController.text,
+                evaluacion: "0",
                 horaInicio: _horaInicio,
               );
               widget.onReportSubmitted(newReport);
@@ -332,3 +322,4 @@ class _ReportDialogState extends State<ReportDialog> {
     );
   }
 }
+
