@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:loggy/loggy.dart';
 import '../authentication/login.dart';
 import '../../controller/Report_controller.dart';
 import '../../../domain/models/report.dart';
@@ -20,7 +22,7 @@ class HomePageSup extends StatefulWidget {
 }
 
 class _HomePageSupState extends State<HomePageSup> {
-  final ReportController reportController = Get.find();
+  ReportController reportController = Get.find();
   bool showAllReports = false; // Estado para mostrar todos los reportes
 
   void _showReportDialog(BuildContext context) {
@@ -56,94 +58,135 @@ class _HomePageSupState extends State<HomePageSup> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              key: const Key('ButtonReport'),
-              onPressed: () {
-                _showReportDialog(context);
-              },
-              child: const Text('Enviar Reporte de Trabajo'),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Reportes enviados:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    DataTable(
-                      columnSpacing: 15,
-                      columns: const [
-                        DataColumn(
-                          label: Text('US ID'),
-                        ),
-                        DataColumn(
-                          label: Text('Correo Soporte'),
-                        ),
-                        DataColumn(
-                          label: Text('Cliente ID'),
-                        ),
-                        DataColumn(
-                          label: Text('Descripción'),
-                        ),
-                        DataColumn(
-                          label: Text('Duración'),
-                        ),
-                        DataColumn(
-                          label: Text('Evaluación'),
-                        ),
-                        DataColumn(
-                          label: Text('Hora de Inicio'),
-                        ),
-                      ],
-                      rows: showAllReports
-                          ? reportController.obtReports.map((report) {
-                              return DataRow(cells: [
-                                DataCell(Text(report.clienteID.toString())),
-                                DataCell(Text(report.descripcion)),
-                                DataCell(Text(report.duracion.toString())),
-                                DataCell(Text(report.evaluacion.toString())),
-                                DataCell(Text(report.horaInicio.toString())),
-                              ]);
-                            }).toList()
-                          : reportController.obtReports
-                              .take(5) // Mostrar solo los primeros 5 reportes
-                              .map((report) {
-                              return DataRow(cells: [
-                                DataCell(Text(report.clienteID.toString())),
-                                DataCell(Text(report.descripcion)),
-                                DataCell(Text(report.duracion.toString())),
-                                DataCell(Text(report.evaluacion.toString())),
-                                DataCell(Text(report.horaInicio.toString())),
-                              ]);
-                            }).toList(),
-                    ),
-                    if (reportController.obtReports.length > 5)
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            showAllReports = !showAllReports;
-                          });
-                        },
-                        child: Text(
-                            showAllReports ? 'Mostrar menos' : 'Mostrar más'),
-                      ),
-                  ],
-                ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            key: const Key('ButtonReport'),
+            onPressed: () {
+              _showReportDialog(context);
+            },
+            child: const Text('Enviar Reporte de Trabajo'),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Reportes enviados:',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey), // Borde gris
+                borderRadius: BorderRadius.circular(10),
               ),
+              child: _getXlistView(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+  Widget _getXlistView() {
+  // Filtrar los reportes por correoSoporte igual a loggedEmail
+  List<Report> filteredReports = reportController.finReports
+      .where((report) => report.correoSoporte == widget.loggedEmail)
+      .toList();
+
+  return Container(
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey),
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: ListView.builder(
+      itemCount: filteredReports.length,
+      itemBuilder: (context, index) {
+        Report report = filteredReports[index];
+        return ListTile(
+          title: Row(
+            children: [
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('form ID: ${report.id}'),
+                    const SizedBox(width: 5),
+                    Text('Evaluation: ${report.evaluacion}'),
+                  ],
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  _showEvaluationDialog(context, report);
+                },
+                child: const Text('See'),
+              ),
+            ],
+          ),
+        );
+      },
+    ),
+  );
+}
+
+  void _showEvaluationDialog(BuildContext context, Report report) {
+    double _rating = report.evaluacion != null
+        ? double.tryParse(report.evaluacion!) ?? 0
+        : 0;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Evaluate Form ID: ${report.id}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('ID: ${report.id}', style: const TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
+              Text('Description: ${report.descripcion}',
+                  style: const TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
+              Text('Client: ${report.clienteID}',
+                  style: const TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
+              Text('Start Time: ${report.horaInicio}',
+                  style: const TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
+              Text('Duration: ${report.duracion}',
+                  style: const TextStyle(fontSize: 18)),
+              const SizedBox(height: 20),
+              RatingBar.builder(
+                initialRating: _rating,
+                minRating: 0,
+                direction: Axis.horizontal,
+                allowHalfRating: false,
+                itemCount: 5,
+                itemSize: 40,
+                itemBuilder: (context, _) => const Icon(
+                  Icons.star,
+                  color: Colors.amber,
+                ),
+                onRatingUpdate: (rating) {
+                  _rating = rating;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text('Cancel'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
 }
 
 class ReportDialog extends StatefulWidget {

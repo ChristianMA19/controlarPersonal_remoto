@@ -11,16 +11,16 @@ class Report {
   });
 
   int? id;
-  int usid; 
+  late int usid; // Cambiar a entero
   String correoSoporte;
-  int clienteID; 
+  late int clienteID; // Cambiar a entero
   String descripcion;
-  int duracion; 
+  late int duracion; // Cambiar a entero
   String evaluacion;
-  DateTime horaInicio;
+  late DateTime horaInicio;
 
   factory Report.fromJson(Map<String, dynamic> json) {
-    Report us = Report(
+    return Report(
       id: json['id'],
       usid: json['usid'],
       correoSoporte: json['correoSoporte'],
@@ -30,7 +30,6 @@ class Report {
       evaluacion: json['evaluacion'],
       horaInicio: DateTime.parse(json['horaInicio']),
     );
-    return us;
   }
 
   Map<String, dynamic> toJson() {
