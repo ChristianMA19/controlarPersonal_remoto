@@ -30,6 +30,7 @@ class _HomePageSupState extends State<HomePageSup> {
       context: context,
       builder: (BuildContext context) {
         return ReportDialog(
+          loggedEmail: widget.loggedEmail,
           onReportSubmitted: (Report report) async {
             Loggy('Reporte enviado: $report');
             int status = await reportController.checkConnectivity() ? 0 : 1;
@@ -194,8 +195,9 @@ class _HomePageSupState extends State<HomePageSup> {
 
 class ReportDialog extends StatefulWidget {
   final Function(Report) onReportSubmitted;
+  final String loggedEmail;
 
-  ReportDialog({required this.onReportSubmitted});
+  ReportDialog({required this.onReportSubmitted, required this.loggedEmail});
 
   @override
   _ReportDialogState createState() => _ReportDialogState();
@@ -204,7 +206,6 @@ class ReportDialog extends StatefulWidget {
 class _ReportDialogState extends State<ReportDialog> {
   final _formKey = GlobalKey<FormState>();
   final _usidController = TextEditingController();
-  final _correoSoporteController = TextEditingController();
   final _clienteIDController = TextEditingController();
   final _descripcionController = TextEditingController();
   final _duracionController = TextEditingController();
@@ -231,16 +232,12 @@ class _ReportDialogState extends State<ReportDialog> {
                   return null;
                 },
               ),
-              TextFormField(
-                controller: _correoSoporteController,
-                decoration: InputDecoration(labelText: 'correo Soporte'),
-                keyboardType: TextInputType.text,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese el correo del soporte';
-                  }
-                  return null;
-                },
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  'Correo Soporte: ${widget.loggedEmail}',
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
               TextFormField(
                 controller: _clienteIDController,
@@ -307,7 +304,7 @@ class _ReportDialogState extends State<ReportDialog> {
             if (_formKey.currentState!.validate()) {
               final newReport = Report(
                 usid: int.parse(_usidController.text),
-                correoSoporte: _correoSoporteController.text,
+                correoSoporte: widget.loggedEmail,
                 clienteID: int.parse(_clienteIDController.text),
                 descripcion: _descripcionController.text,
                 duracion: int.parse(_duracionController.text),
