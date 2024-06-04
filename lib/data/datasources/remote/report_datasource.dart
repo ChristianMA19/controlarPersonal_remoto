@@ -8,6 +8,7 @@ import '../remote/func_report_datasource.dart';
 
 class ReportDatasource implements FuncReportDatasource {
   final String baseURL = 'https://retoolapi.dev/G7bm5J/data';
+  
 
   @override
   Future<void> agregarReportesi(Report report, int status) async {
@@ -27,6 +28,7 @@ class ReportDatasource implements FuncReportDatasource {
       throw Exception('Error al añadir un reporte: $error');
     }
   }
+
 
   @override
   Future<List<Report>> obtenerReportesi() async {
