@@ -14,7 +14,7 @@ void main() {
   group('Users support login', () {
     test('Login user', () async {
       final userlogedin =
-          await repository.login("preuba@sa.com", "16d45s32das");
+          await repository.login("preuba@sa.com", "123456");
       expect(userlogedin, isTrue);
     });
 

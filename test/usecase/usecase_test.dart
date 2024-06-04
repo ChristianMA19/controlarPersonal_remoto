@@ -1,3 +1,4 @@
+import 'package:controlarpersonal_remoto/domain/models/client.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:controlarpersonal_remoto/domain/models/user.dart';
@@ -22,7 +23,7 @@ void main() {
       ));
       final userList2 = await userUseCase.getUsers();
       expect(userList.length + 1, userList2.length);
-      await userUseCase.deleteUser(11);
+      await userUseCase.deleteUser(userList2[userList2.length - 1].id!);
     });
 
     test('Add users', () async {
@@ -35,8 +36,9 @@ void main() {
     });
 
     test('Update users', () async {
+      final datos = await userUseCase.getUsers();
       final userUpdated = await userUseCase.updateUser(User(
-        id: 11,
+        id: datos[datos.length - 1].id!,
         name: "Jose",
         email: "Jose@juan.com",
         password: "123123",
@@ -46,7 +48,7 @@ void main() {
 
     test('Update user bad', () async {
       final userUpdated = await userUseCase.updateUser(User(
-        id: 110,
+        id: 1100,
         name: "Jose",
         email: "Jose@juan.com",
         password: "1231234",
@@ -55,14 +57,76 @@ void main() {
     });
 
     test('Delete users', () async {
-      final userDeleted = await userUseCase.deleteUser(11);
+      final datos = await userUseCase.getUsers();
+      final userDeleted = await userUseCase.deleteUser(datos[datos.length - 1].id!);
       expect(userDeleted, isTrue);
     });
 
     test('Delete user bad', () async {
-      final userDeleted = await userUseCase.deleteUser(110);
+      final userDeleted = await userUseCase.deleteUser(1100);
       expect(userDeleted, isFalse);
     });
-    
+  });
+
+  group('Clients support', () {
+    test('Get all clients', () async {
+      // Get initial list of clients
+      final userList = await userUseCase.getClients();
+
+      // Add a new client
+      await userUseCase.addClient(Client(
+        name: "Juan",
+      ));
+
+      // Get updated list of clients
+      final userList2 = await userUseCase.getClients();
+
+      // Check that the new client has been added
+      expect(userList.length + 1, userList2.length);
+
+      // Delete the newly added client
+      final newClientId = userList2[userList2.length - 1].id!;
+      await userUseCase.deleteClient(newClientId);
+
+      // Verify the client has been deleted
+      final userList3 = await userUseCase.getClients();
+      expect(userList.length, userList3.length);
+    });
+
+    test('Add clients', () async {
+      final userAdded = await userUseCase.addClient(Client(
+        name: "Juan",
+      ));
+      expect(userAdded, isTrue);
+    });
+
+    test('Update clients', () async {
+      final datos = await userUseCase.getClients();
+
+      final userUpdated = await userUseCase.updateClient(Client(
+        id: datos[datos.length - 1].id!,
+        name: "Jose",
+      ));
+      expect(userUpdated, isTrue);
+    });
+
+    test('Update clients bad', () async {
+      final userUpdated = await userUseCase.updateClient(Client(
+        id: 1100,
+        name: "Jose",
+      ));
+      expect(userUpdated, isFalse);
+    });
+
+    test('Delete clients', () async {
+      final datos = await userUseCase.getClients();
+      final userDeleted = await userUseCase.deleteClient(datos[0].id!);
+      expect(userDeleted, isTrue);
+    });
+
+    test('Delete clients bad', () async {
+      final userDeleted = await userUseCase.deleteClient(1100);
+      expect(userDeleted, isFalse);
+    });
   });
 }
