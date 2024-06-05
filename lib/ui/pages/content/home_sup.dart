@@ -122,10 +122,6 @@ class _HomePageSupState extends State<HomePageSup> {
                       const SizedBox(
                         width: 20,
                       ),
-                      Text('Date: ${report.horaInicio}'),
-                      const SizedBox(
-                        width: 20,
-                      ),
                       Text('Evaluation: ${report.evaluacion}'),
                     ],
                   ),
