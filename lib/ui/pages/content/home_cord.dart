@@ -166,7 +166,7 @@ class _HomePageCordState extends State<HomePageCord> {
                       const SizedBox(width: 20),
                       Text('Client: ${report.clienteID}'),
                       const SizedBox(width: 20),
-                      Text('Support: ${report.clienteID}'),
+                      Text('Support: ${report.usid}'),
                       const SizedBox(width: 20),
                       Text('Date: ${report.horaInicio}'),
                       const SizedBox(width: 20),

@@ -115,7 +115,17 @@ class _HomePageSupState extends State<HomePageSup> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('form ID: ${report.id}'),
-                      const SizedBox(width: 5),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text('Client: ${report.clienteID}'),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text('Date: ${report.horaInicio}'),
+                      const SizedBox(
+                        width: 20,
+                      ),
                       Text('Evaluation: ${report.evaluacion}'),
                     ],
                   ),
@@ -221,17 +231,6 @@ class _ReportDialogState extends State<ReportDialog> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              TextFormField(
-                controller: _usidController,
-                decoration: InputDecoration(labelText: 'usid'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingrese el US ID';
-                  }
-                  return null;
-                },
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
@@ -271,21 +270,24 @@ class _ReportDialogState extends State<ReportDialog> {
                   return null;
                 },
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  final selectedDate = await showDatePicker(
-                    context: context,
-                    initialDate: _horaInicio,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                  );
-                  if (selectedDate != null) {
-                    setState(() {
-                      _horaInicio = selectedDate;
-                    });
-                  }
-                },
-                child: Text('Seleccionar Fecha de Inicio'),
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _horaInicio,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (selectedDate != null) {
+                      setState(() {
+                        _horaInicio = selectedDate;
+                      });
+                    }
+                  },
+                  child: Text('Seleccionar Fecha de Inicio'),
+                ),
               ),
               Text('Fecha seleccionada: ${_horaInicio.toLocal()}'),
             ],
@@ -321,4 +323,3 @@ class _ReportDialogState extends State<ReportDialog> {
     );
   }
 }
-
