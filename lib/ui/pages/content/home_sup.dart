@@ -166,6 +166,9 @@ class _HomePageSupState extends State<HomePageSup> {
               Text('Client: ${report.clienteID}',
                   style: const TextStyle(fontSize: 18)),
               const SizedBox(height: 10),
+              Text('Support: ${report.usid}',
+                  style: const TextStyle(fontSize: 18)),
+              const SizedBox(height: 10),
               Text('Start Time: ${report.horaInicio}',
                   style: const TextStyle(fontSize: 18)),
               const SizedBox(height: 10),
@@ -231,6 +234,17 @@ class _ReportDialogState extends State<ReportDialog> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              TextFormField(
+                controller: _usidController,
+                decoration: InputDecoration(labelText: 'usid'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese el US ID';
+                  }
+                  return null;
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
