@@ -5,199 +5,137 @@
 // // gestures. You can also use WidgetTester to find child widgets in the widget
 // // tree, read text, and verify that the values of widget properties are correct.
 
-// import 'package:controlarpersonal_remoto/domain/models/report.dart';
-// import 'package:controlarpersonal_remoto/domain/models/user.dart';
-// import 'package:controlarpersonal_remoto/domain/repositories/repository.dart';
-// import 'package:controlarpersonal_remoto/domain/use_case/authentication_usecase.dart';
-// import 'package:controlarpersonal_remoto/domain/use_case/user_usecase.dart';
-// import 'package:controlarpersonal_remoto/ui/controller/authentication_controller.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:controlarpersonal_remoto/ui/controller/user_controller.dart';
-// import 'package:controlarpersonal_remoto/ui/pages/content/home_sup.dart';
-// import 'package:controlarpersonal_remoto/ui/pages/content/report.dart';
+import 'package:controlarpersonal_remoto/ui/pages/content/home_cord.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+import 'package:controlarpersonal_remoto/domain/models/report.dart';
+import 'package:controlarpersonal_remoto/domain/use_case/reports_usecase.dart';
+import 'package:controlarpersonal_remoto/ui/controller/Report_controller.dart';
+import 'package:controlarpersonal_remoto/ui/pages/content/home_sup.dart';
 
+void main() {
+  group('HomePageSup Widget Tests', () {
+    late ReportController reportController;
 
-// import 'package:controlarpersonal_remoto/main.dart';
-// import 'package:get/get.dart';
-// import 'package:get/get_connect/http/src/_http/mock/http_request_mock.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:get/get_core/src/get_main.dart';
-// import 'package:loggy/loggy.dart';
+    setUp(() {
+      // Inicializar el ReportController antes de cada prueba
+      reportController = ReportController(reportUseCase: Get.find<IReports>());
+      Get.put<ReportController>(reportController);
+    });
 
-// void main() {
-//   Get.put(Repository());
-//   Get.put(AuthenticationUseCase());
-//   Get.put(UserUseCase());
-//   Get.put(AuthenticationController());
-//   UserController userController = Get.put(UserController());;
+    testWidgets('Show report dialog', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        GetMaterialApp(
+          home: HomePageSup(
+            loggedname: 'Test User',
+            loggedEmail: 'test@test.com',
+            loggedPassword: 'password',
+          ),
+        ),
+      );
 
-//   var esperado = [
-//     {"id": 2, "Name": "Christian", "Email": "a@c.com", "Password": "abcdef123"},
-//     {
-//       "id": 4,
-//       "Name": "sebaxe",
-//       "Email": "sebax@a.com",
-//       "Password": "48561f2d3sf"
-//     },
-//     {
-//       "id": 5,
-//       "Name": "pruebas",
-//       "Email": "preuba@sa.com",
-//       "Password": "16d45s32das"
-//     },
-//     {"id": 6, "Name": "locura", "Email": "loc@a.com", "Password": "dsdasdasd"},
-//     {
-//       "id": 7,
-//       "Name": "aaaa",
-//       "Email": "aaa@aaaa.com",
-//       "Password": "561sd85sdasd"
-//     },
-//     {
-//       "id": 8,
-//       "Name": "chris",
-//       "Email": "ccj@a.com",
-//       "Password": "6854128594516"
-//     },
-//     {
-//       "id": 9,
-//       "Name": "augusto salazar",
-//       "Email": "augus@a.com",
-//       "Password": "865489546"
-//     },
-//     {
-//       "id": 10,
-//       "Name": "Juan",
-//       "Email": "campeon@a.com",
-//       "Password": "123456789"
-//     }
-//   ];
-//   group('Users support', () {
-//   //   test('Get users', () async {
-//   //   final userList = await userUseCase.getUsers();
-//   // });
+      // Verificar que el botón de enviar reporte está presente
+      expect(find.byKey(Key('ButtonReport')), findsOneWidget);
 
-//     // test('Add users', () async {
-//     //   final userAdded = await userController.addUser(User(
-//     //     name: "Juan",
-//     //     email: "Juan@Juan.com",
-//     //     password: "123456789101112",
-//     //   ));
+      // Tocar el botón para abrir el diálogo de reporte
+      await tester.tap(find.byKey(Key('ButtonReport')));
+      await tester.pumpAndSettle();
 
-//     //   print('User added: $userAdded');
-//     //   print('Last user: ${userController.users.last}');
-//     // });
+      // Verificar que el diálogo de reporte está presente
+      expect(find.byType(AlertDialog), findsOneWidget);
 
-//     // test(
-//     //     'Update users',
-//     //     () => {
-//     //           // expect(1, 1);});
-//     //         });
+      // Simular el envío de un reporte
+      final report = Report(
+        usid: 1,
+        correoSoporte: 'test@test.com',
+        clienteID: 1,
+        descripcion: 'Test description',
+        duracion: 60,
+        evaluacion: '5',
+        horaInicio: DateTime.now(),
+      );
 
-//     group('HomePageSup Widget Test', () {
-//     testWidgets('renders HomePageSup and displays fetched reports', (WidgetTester tester) async {
-//       final client = MockClient((request) async {
-//         final response = [
-//           {
-//             'Problema Solucionado': 'Problem 1',
-//             'Cliente Atendido': 'Client 1',
-//             'Hora de Inicio': 1609459200,
-//             'Tiempo de Duración': 120,
-//             'Evaluación': 5,
-//           },
-//           {
-//             'Problema Solucionado': 'Problem 2',
-//             'Cliente Atendido': 'Client 2',
-//             'Hora de Inicio': 1609462800,
-//             'Tiempo de Duración': 90,
-//             'Evaluación': 4,
-//           },
-//         ];
-//         return http.Response(json.encode(response), 200);
-//       });
+      await tester.enterText(find.byType(TextFormField).at(0), '1'); // Ingresar usid
+      await tester.enterText(find.byType(TextFormField).at(1), '1'); // Ingresar clienteID
+      await tester.enterText(find.byType(TextFormField).at(2), 'Test description'); // Ingresar descripción
+      await tester.enterText(find.byType(TextFormField).at(3), '60'); // Ingresar duración
 
-//       await tester.pumpWidget(
-//         GetMaterialApp(
-//           home: HomePageSup(
-//             loggedname: 'test',
-//             loggedEmail: 'test@example.com',
-//             loggedPassword: 'password',
-//             //client: client,
-//           ),
-//         ),
-//       );
+      await tester.tap(find.text('Enviar'));
+      await tester.pumpAndSettle();
 
-//       await tester.pumpAndSettle();
+      // Verificar que el reporte fue enviado correctamente
+      expect(reportController.finReports.length, 1);
+      expect(reportController.finReports[0].clienteID, report.clienteID);
+    });
+  });
 
-//       expect(find.text('Problem 1'), findsOneWidget);
-//       expect(find.text('Client 1'), findsOneWidget);
-//       expect(find.text('120'), findsOneWidget);
-//       expect(find.text('5'), findsOneWidget);
-//       expect(find.text('Problem 2'), findsOneWidget);
-//       expect(find.text('Client 2'), findsOneWidget);
-//       expect(find.text('90'), findsOneWidget);
-//       expect(find.text('4'), findsOneWidget);
-//     });
+  group('HomePageCord Widget Tests', () {
+    late ReportController reportController;
 
-//     testWidgets('displays error message on fetch failure', (WidgetTester tester) async {
-//       final client = MockClient((request) async {
-//         return http.Response('Not Found', 404);
-//       });
+    setUp(() {
+      // Inicializar el ReportController antes de cada prueba
+      reportController = ReportController(reportUseCase: Get.find<IReports>());
+      Get.put<ReportController>(reportController);
+    });
 
-//       await tester.pumpWidget(
-//         GetMaterialApp(
-//           home: HomePageSup(
-//             loggedname: 'test',
-//             loggedEmail: 'test@example.com',
-//             loggedPassword: 'password',
-//             //client: client,
-//           ),
-//         ),
-//       );
+    testWidgets('Filter reports by client ID', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        GetMaterialApp(
+          home: HomePageCord(
+            loggedEmail: 'test@test.com',
+            loggedPassword: 'password',
+          ),
+        ),
+      );
 
-//       await tester.pumpAndSettle();
+      // Verificar que se muestra la lista de reportes
+      expect(find.byType(ListView), findsOneWidget);
 
-//       expect(find.text('Failed to fetch reports'), findsOneWidget);
-//     });
-//   });
+      // Seleccionar un filtro por cliente
+      await tester.tap(find.byKey(Key('dropdown')));
+      await tester.pumpAndSettle();
 
-//   group('Report Model Test', () {
-//     test('Report fromJson returns correct data', () {
-//       final json = {
-//         'Problema Solucionado': 'Problem 1',
-//         'Cliente Atendido': 'Client 1',
-//         'Hora de Inicio': 4,
-//         'Tiempo de Duración': 120,
-//         'Evaluación': 5,
-//       };
+      await tester.tap(find.text('cli_1')); // Seleccionar cliente ID 1
+      await tester.pumpAndSettle();
 
-//       final report = Report.fromJson(json);
+      // Verificar que solo se muestran reportes del cliente 1
+      expect(find.text('Client: 1'), findsWidgets);
 
-//       expect(report.problema, 'Problem 1');
-//       expect(report.cliente, 'Client 1');
-//       expect(report.horaInicio, 4);
-//       expect(report.duracion, 120);
-//       expect(report.evaluacion, 5);
-//     });
+      // Verificar que la cantidad de reportes mostrados es correcta
+      expect(find.byType(ListTile), findsNWidgets(1)); // Ajusta según la cantidad de reportes esperados
+    });
 
-//     test('Report toJson returns correct data', () {
-//       final report = Report(
-//         problema: 'Problem 1',
-//         cliente: 'Client 1',
-//         horaInicio: 4,
-//         duracion: 120,
-//         evaluacion: 5,
-//       );
+    testWidgets('Evaluate report', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        GetMaterialApp(
+          home: HomePageCord(
+            loggedEmail: 'test@test.com',
+            loggedPassword: 'password',
+          ),
+        ),
+      );
 
-//       final json = report.toJson();
+      // Verificar que se muestra la lista de reportes
+      expect(find.byType(ListView), findsOneWidget);
 
-//       expect(json['Problema Solucionado'], 'Problem 1');
-//       expect(json['Cliente Atendido'], 'Client 1');
-//       expect(json['Hora de Inicio'], 4);
-//       expect(json['Tiempo de Duración'], 120);
-//       expect(json['Evaluación'], 5);
-//     });
-//   });
+      // Seleccionar un reporte para evaluar
+      await tester.tap(find.text('Evaluate').first);
+      await tester.pumpAndSettle();
 
-//   });
-// }
+      // Verificar que el diálogo de evaluación está presente
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      // Simular la evaluación del reporte
+      await tester.tap(find.byType(RatingBar).last); // Tocar la última estrella
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      // Verificar que el reporte fue evaluado correctamente
+      expect(reportController.finReports[0].evaluacion, '5'); // Ajusta según la evaluación esperada
+    });
+  });
+}

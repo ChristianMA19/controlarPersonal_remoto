@@ -4,39 +4,9 @@ import 'package:controlarpersonal_remoto/domain/models/report.dart';
 import 'package:controlarpersonal_remoto/domain/repositories/report_repository.dart';
 import 'package:controlarpersonal_remoto/domain/use_case/reports_usecase.dart';
 
-class TestReportRepository extends ReportRepository {
-  final List<Report> _reports = [];
-
-  @override
-  Future<bool> agregarReportesi(Report reports, int status) async {
-    _reports.add(reports);
-    return true;
-  }
-
-  @override
-  Future<List<Report>> obtenerReportesi() async {
-    return _reports;
-  }
-
-  @override
-  Future<void> eliminarReportesi(String id) async {
-    _reports.removeWhere((report) => report.id == id);
-  }
-
-  @override
-  Future<void> evaluarReportesi(Report report) async {
-    final index = _reports.indexWhere((r) => r.id == report.id);
-    if (index != -1) {
-      _reports[index] = report;
-    }
-  }
-}
-
 void main() {
-  // Inicializa el ReportRepository de prueba
-  final testReportRepository = TestReportRepository();
-  Get.put<ReportRepository>(testReportRepository);
-  final IReports reportUseCase = IReports(testReportRepository);
+  ReportRepository repository = Get.put(ReportRepository());
+  IReports reportUseCase = Get.put(IReports(find));
 
   group('Reports use case tests', () {
     test('Agregar reportes', () async {
